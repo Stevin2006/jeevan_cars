@@ -33,6 +33,9 @@ export async function createSession(
   const token = randomBytes(32).toString("base64url");
   const now = Date.now();
 
+  // Housekeeping: drop sessions that can no longer be used.
+  await prisma.adminSession.deleteMany({ where: { expiresAt: { lte: new Date(now) } } });
+
   await prisma.adminSession.create({
     data: {
       adminId,

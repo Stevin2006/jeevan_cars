@@ -5,8 +5,11 @@
  *   npm run admin:create            create the admin (refuses if one exists)
  *   npm run admin:create -- --reset reset the existing admin's password and
  *                                   sign out all of their sessions
+ *   --interactive                   ask for email, name and password instead of
+ *                                   reading ADMIN_* (use for production)
  */
 import "dotenv/config";
+import { createInterface } from "node:readline/promises";
 import { z } from "zod";
 import { createPrismaClient } from "@/lib/db/create-client";
 import { hashPassword, PASSWORD_MIN_LENGTH } from "@/lib/auth/password";
@@ -20,8 +23,37 @@ const inputSchema = z.object({
     .min(PASSWORD_MIN_LENGTH, `ADMIN_PASSWORD must be at least ${PASSWORD_MIN_LENGTH} characters`),
 });
 
+/** Prompts on the terminal; `secret` answers are not echoed. */
+async function ask(question: string, secret = false): Promise<string> {
+  const rl = createInterface({ input: process.stdin, output: process.stdout, terminal: true });
+  if (secret) {
+    const write = (rl as unknown as { _writeToOutput: (text: string) => void })._writeToOutput;
+    (rl as unknown as { _writeToOutput: (text: string) => void })._writeToOutput = (text) =>
+      write.call(rl, text.startsWith(question) ? text : "");
+  }
+  const answer = await rl.question(question);
+  rl.close();
+  if (secret) process.stdout.write("\n");
+  return secret ? answer : answer.trim();
+}
+
+async function readInput() {
+  if (!process.argv.includes("--interactive")) return process.env;
+  if (!process.stdin.isTTY) throw new Error("--interactive needs a terminal");
+  const email = await ask("Admin email: ");
+  const name = await ask("Admin name: ");
+  const password = await ask(`Password (min ${PASSWORD_MIN_LENGTH} characters): `, true);
+  if ((await ask("Repeat password: ", true)) !== password) throw new Error("Passwords don't match");
+  return {
+    DATABASE_URL: process.env.DATABASE_URL,
+    ADMIN_EMAIL: email,
+    ADMIN_NAME: name,
+    ADMIN_PASSWORD: password,
+  };
+}
+
 async function main() {
-  const parsed = inputSchema.safeParse(process.env);
+  const parsed = inputSchema.safeParse(await readInput());
   if (!parsed.success) {
     throw new Error(parsed.error.issues.map((issue) => issue.message).join("\n"));
   }

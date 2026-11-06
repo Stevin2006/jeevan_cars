@@ -4,7 +4,12 @@ A website and admin CMS for Jeevan Cars, a used-vehicle dealership.
 
 Built with Next.js 16 (App Router, Cache Components), TypeScript, Tailwind CSS 4, shadcn/ui, Prisma 7, PostgreSQL and Cloudinary.
 
-See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the system design, data model and roadmap.
+| Document                                     | For                                         |
+| -------------------------------------------- | ------------------------------------------- |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | System design, data model, folder structure |
+| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)     | Going live on Vercel + Neon + Cloudinary    |
+| [docs/ADMIN-GUIDE.md](docs/ADMIN-GUIDE.md)   | Day-to-day use of the admin dashboard       |
+| [docs/SECURITY.md](docs/SECURITY.md)         | Security controls and operational checklist |
 
 ## Requirements
 
@@ -28,20 +33,21 @@ Health check: `GET /api/health` returns `{"status":"ok","database":"up"}`, or HT
 
 ## Scripts
 
-| Script                      | Purpose                                                      |
-| --------------------------- | ------------------------------------------------------------ |
-| `dev` / `build` / `start`   | Next.js development, production build, production server     |
-| `lint` / `typecheck`        | ESLint; route type generation + `tsc --noEmit`               |
-| `format` / `format:check`   | Prettier (with Tailwind class sorting)                       |
-| `db:up` / `db:down`         | Start / stop the local Docker database                       |
-| `db:migrate`                | Create and apply migrations in development                   |
-| `db:deploy`                 | Apply pending migrations in production                       |
-| `db:seed`                   | Idempotent base data (safe to re-run)                        |
-| `db:seed:sample`            | Development-only sample inventory (Unsplash photos)          |
-| `db:studio`                 | Prisma Studio                                                |
-| `test` / `test:watch`       | Unit + integration tests (Vitest) against `jeevan_cars_test` |
-| `test:e2e`                  | Rebuilds the e2e database, then runs Playwright              |
-| `admin:create [-- --reset]` | Create the single admin, or reset their credentials          |
+| Script                                      | Purpose                                                                |
+| ------------------------------------------- | ---------------------------------------------------------------------- |
+| `dev` / `build` / `start`                   | Next.js development, production build, production server               |
+| `lint` / `typecheck`                        | ESLint; route type generation + `tsc --noEmit`                         |
+| `format` / `format:check`                   | Prettier (with Tailwind class sorting)                                 |
+| `db:up` / `db:down`                         | Start / stop the local Docker database                                 |
+| `db:migrate`                                | Create and apply migrations in development                             |
+| `db:deploy`                                 | Apply pending migrations in production                                 |
+| `db:seed`                                   | Idempotent base data (safe to re-run)                                  |
+| `db:seed:sample`                            | Development-only sample inventory (Unsplash photos)                    |
+| `db:studio`                                 | Prisma Studio                                                          |
+| `test` / `test:watch`                       | Unit + integration tests (Vitest) against `jeevan_cars_test`           |
+| `test:e2e`                                  | Rebuilds the e2e database, then runs Playwright                        |
+| `prod:migrate` / `prod:seed` / `prod:admin` | Run migrations, base seed, interactive admin setup against `.env.neon` |
+| `admin:create [-- --reset]`                 | Create the single admin, or reset their credentials                    |
 
 ## Testing
 

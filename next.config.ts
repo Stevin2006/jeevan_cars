@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const isDev = process.env.NODE_ENV === "development";
+// Sample stock hotlinks Unsplash; production builds only allow it when asked.
+const allowSampleImages = isDev || process.env.ALLOW_SAMPLE_IMAGES === "true";
 
 // Static CSP (no nonces) so pages stay cacheable under Cache Components.
 const contentSecurityPolicy = [
@@ -20,7 +22,8 @@ const contentSecurityPolicy = [
 
 const securityHeaders = [
   { key: "Content-Security-Policy", value: contentSecurityPolicy },
-  { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
+  // No `preload`: submitting to the HSTS preload list is a one-way decision for the domain owner.
+  { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains" },
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "X-Frame-Options", value: "DENY" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
@@ -49,8 +52,10 @@ const nextConfig: NextConfig = {
     qualities: [60, 75],
     remotePatterns: [
       { protocol: "https", hostname: "res.cloudinary.com" },
-      // Development sample inventory (prisma/seed-sample.ts). Remove before launch.
-      { protocol: "https", hostname: "images.unsplash.com" },
+      // Development sample inventory (prisma/seed-sample.ts) only.
+      ...(allowSampleImages
+        ? [{ protocol: "https" as const, hostname: "images.unsplash.com" }]
+        : []),
     ],
   },
   async headers() {

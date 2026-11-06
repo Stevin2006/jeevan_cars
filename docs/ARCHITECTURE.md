@@ -1,6 +1,6 @@
 # Jeevan Cars — Architecture (Phase 1)
 
-Status: **approved** (Phase 2 foundation implemented 2026-11-06). Schema: [`prisma/schema.prisma`](../prisma/schema.prisma).
+Status: **implemented** (Phases 1–6, 2026-11-06). Deployment target: Vercel + Neon + Cloudinary. Schema: [`prisma/schema.prisma`](../prisma/schema.prisma).
 
 ## 1. Environment findings
 

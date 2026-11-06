@@ -1,0 +1,31 @@
+# Security overview
+
+## Controls in place
+
+| Area                 | Control                                                                                                                                                                                                                                                                                                                                     |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Admin authentication | Single admin, Argon2id password hashes (OWASP parameters). Database-backed sessions: 256-bit random token in an `httpOnly`, `SameSite=Lax` cookie (`__Host-` prefixed and `Secure` in production); only its SHA-256 hash is stored. 7-day idle and 30-day absolute expiry; password change signs out other sessions; "sign out everywhere". |
+| Brute force          | Failed sign-ins rate-limited per IP (10/15 min) and per email (5/15 min); successful sign-ins don't count. Unknown emails take as long to reject as wrong passwords. Generic error message.                                                                                                                                                 |
+| Authorization        | `proxy.ts` redirects requests without a session cookie; **every** admin page and Server Action re-validates the session in the database (`requireAdmin()`). Tested: all 13 admin actions refuse to run without a session.                                                                                                                   |
+| Redirects            | Post-login `next` is restricted to same-site `/admin` paths.                                                                                                                                                                                                                                                                                |
+| CSRF                 | Server Actions reject cross-origin POSTs (Next.js Origin check); cookies are `SameSite=Lax`.                                                                                                                                                                                                                                                |
+| Input validation     | Zod schemas on every form, re-run on the server; bounded lengths; numeric ranges; enum checks. Prisma parameterises all queries; the one raw query (rate limiting) uses tagged-template parameters.                                                                                                                                         |
+| Output               | React escapes all user content; the only `dangerouslySetInnerHTML` is JSON-LD with `<` escaped.                                                                                                                                                                                                                                             |
+| Private data         | Public queries use explicit select lists that exclude registration numbers, internal notes and drafts; hidden prices are removed server-side before rendering (tested against page HTML).                                                                                                                                                   |
+| Uploads              | Browser uploads go directly to Cloudinary with a short-lived signature bound to our folder and image formats (tampering returns 401). On save, each new asset is re-read via the Admin API and rejected/deleted unless it is an allowed format, ≤ 10 MB and ≥ 400 px; URLs and sizes come from Cloudinary, not the browser.                 |
+| Public form abuse    | Enquiries: honeypot field, minimum fill time, 5 per IP per 10 minutes, IPs stored only as HMAC hashes. Client IP is taken from the proxy-appended end of `X-Forwarded-For` (`TRUSTED_PROXY_HOPS`) so it can't be spoofed.                                                                                                                   |
+| Headers              | CSP (`default-src 'self'`, no `unsafe-eval` in production, `frame-ancestors 'none'`, `object-src 'none'`), HSTS, `X-Frame-Options: DENY`, `nosniff`, strict referrer policy, restrictive Permissions-Policy, no `X-Powered-By`.                                                                                                             |
+| Secrets              | Server-only modules (`server-only`) for database, auth and Cloudinary; only the Cloudinary cloud name is public. Environment validated at startup; production requires an https site URL.                                                                                                                                                   |
+| Dependencies         | `npm audit --omit=dev`: 0 known vulnerabilities at release.                                                                                                                                                                                                                                                                                 |
+
+## Known trade-offs
+
+- **CSP allows inline scripts** (`'unsafe-inline'`). Nonce-based CSP would force every page to render per request and disable caching. All dynamic content is escaped, which is the primary XSS defence.
+- **Rate limits live in Postgres**, which is adequate for this traffic. If the site comes under sustained attack, put Vercel Firewall / WAF rules in front.
+
+## Operational checklist
+
+- Rotate any secret that has been shared outside a password manager (the Neon password and Cloudinary secret were shared during development).
+- Use a unique passphrase for the admin account; change it when staff change.
+- Keep dependencies updated (`npm outdated`, `npm audit`) and re-run `npm test && npm run test:e2e` before deploying.
+- Review **Enquiries** for spam patterns; tighten limits in `src/actions/enquiries.ts` if needed.

@@ -22,7 +22,10 @@
     "db:seed": "prisma db seed",
     "db:seed:sample": "tsx prisma/seed-sample.ts",
     "db:studio": "prisma studio",
-    "admin:create": "tsx scripts/create-admin.ts"
+    "admin:create": "tsx scripts/create-admin.ts",
+    "prod:migrate": "set -a && . ./.env.neon && set +a && prisma migrate deploy",
+    "prod:seed": "set -a && . ./.env.neon && set +a && tsx prisma/seed.ts",
+    "prod:admin": "set -a && . ./.env.neon && set +a && tsx scripts/create-admin.ts --interactive"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

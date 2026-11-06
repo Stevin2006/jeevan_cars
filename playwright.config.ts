@@ -1,4 +1,21 @@
 import { defineConfig, devices } from "@playwright/test";
+import { config as loadEnv } from "dotenv";
+
+// Only Cloudinary keys are taken from .env; the upload spec skips without them.
+const local = loadEnv({ quiet: true, processEnv: {} }).parsed ?? {};
+const cloudinary = Object.fromEntries(
+  [
+    "NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME",
+    "CLOUDINARY_API_KEY",
+    "CLOUDINARY_API_SECRET",
+    "CLOUDINARY_FOLDER",
+  ]
+    .map((key) => [key, process.env[key] ?? local[key]])
+    .filter((entry): entry is [string, string] => Boolean(entry[1])),
+);
+
+// Let the upload spec (in worker processes) see whether keys are available.
+Object.assign(process.env, cloudinary);
 
 const PORT = 3100;
 const env = {
@@ -7,6 +24,8 @@ const env = {
   NEXT_PUBLIC_SITE_URL: `http://localhost:${PORT}`,
   AUTH_SECRET: "e2e-secret-e2e-secret-e2e-secret-123456",
   NEXT_DIST_DIR: ".next-e2e",
+  ALLOW_SAMPLE_IMAGES: "true",
+  ...cloudinary,
 };
 
 /**
