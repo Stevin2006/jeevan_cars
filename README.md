@@ -19,6 +19,7 @@ cp .env.example .env        # then fill in AUTH_SECRET (openssl rand -base64 48)
 npm run db:up               # start PostgreSQL 17 in Docker
 npm run db:migrate          # apply migrations
 npm run db:seed             # categories, brands, site settings
+npm run db:seed:sample      # optional: dev sample vehicles + demo contact details
 npm run admin:create        # create the admin from ADMIN_* in .env
 npm run dev                 # http://localhost:3000
 ```
@@ -36,6 +37,7 @@ Health check: `GET /api/health` returns `{"status":"ok","database":"up"}`, or HT
 | `db:migrate`                | Create and apply migrations in development               |
 | `db:deploy`                 | Apply pending migrations in production                   |
 | `db:seed`                   | Idempotent base data (safe to re-run)                    |
+| `db:seed:sample`            | Development-only sample inventory (Unsplash photos)      |
 | `db:studio`                 | Prisma Studio                                            |
 | `admin:create [-- --reset]` | Create the single admin, or reset their credentials      |
 
