@@ -7,7 +7,7 @@ const ARGON2_OPTIONS = {
   parallelism: 1,
 } as const;
 
-export const PASSWORD_MIN_LENGTH = 12;
+export { PASSWORD_MIN_LENGTH } from "@/lib/validations/auth";
 
 export function hashPassword(password: string): Promise<string> {
   return hash(password, ARGON2_OPTIONS);

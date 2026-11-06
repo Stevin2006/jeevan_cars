@@ -68,7 +68,7 @@ Auth.js v5 is still beta and is built around multi-user/OAuth flows we don't nee
 
 ### 2.4 Images (Cloudinary)
 
-- **Upload**: admin requests a signature from `/api/cloudinary/sign` (auth-checked, restricted to `jeevan-cars/vehicles/<id>` folder, `allowed_formats=jpg,png,webp,avif`) → browser uploads directly to Cloudinary (no large bodies through our server) → server action records the image after **re-verifying** the asset via the Admin API (format, bytes ≤ 10 MB, dimensions); invalid assets are deleted.
+- **Upload**: admin requests a signature via an auth-checked Server Action (restricted to the `jeevan-cars/vehicles` folder, `allowed_formats=jpg,png,webp,avif`) → browser uploads directly to Cloudinary (no large bodies through our server) → saving the vehicle form records each new image after **re-verifying** the asset via the Admin API (format, bytes ≤ 10 MB, dimensions); invalid assets are deleted.
 - **Delivery**: `next/image` with a Cloudinary loader (`f_auto,q_auto,c_limit,w_<n>`), responsive `sizes`, blur placeholder.
 - **Ordering/primary**: drag-to-reorder with dnd-kit; one primary image per vehicle enforced by a partial unique index in the DB.
 - Deleting images or vehicles removes Cloudinary assets too (best-effort, logged).
@@ -141,7 +141,7 @@ jeevan_cars/
    │  │  └─ (panel)/           auth-guarded layout with sidebar
    │  │     ├─ dashboard/ vehicles/ vehicles/new/ vehicles/[id]/edit/
    │  │     └─ categories/ brands/ enquiries/ settings/
-   │  ├─ api/cloudinary/sign/route.ts  api/health/route.ts
+   │  ├─ api/health/route.ts
    │  ├─ sitemap.ts  robots.ts  not-found.tsx  error.tsx  layout.tsx  globals.css
    ├─ components/
    │  ├─ ui/                   shadcn + Animate UI primitives

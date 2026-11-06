@@ -50,3 +50,21 @@ export const enquirySubmissionSchema = enquiryFormSchema.extend({
 });
 
 export type EnquirySubmission = z.infer<typeof enquirySubmissionSchema>;
+
+export const ENQUIRY_STATUSES = ["NEW", "CONTACTED", "FOLLOW_UP", "CONVERTED", "CLOSED"] as const;
+
+/** Admin-side changes to an enquiry. */
+export const enquiryUpdateSchema = z.object({
+  id: z.string().min(1),
+  status: z.enum(ENQUIRY_STATUSES),
+  adminNotes: z.preprocess(
+    (value) => (typeof value === "string" && value.trim() === "" ? null : value),
+    z.string().trim().max(5000).nullable(),
+  ),
+  followUpAt: z.preprocess(
+    (value) => (value === "" || value === undefined ? null : value),
+    z.iso.date("Enter a valid date").nullable(),
+  ),
+});
+
+export type EnquiryUpdateInput = z.input<typeof enquiryUpdateSchema>;
