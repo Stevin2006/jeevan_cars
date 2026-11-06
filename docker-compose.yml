@@ -1,0 +1,22 @@
+# Local development database. Production uses a managed PostgreSQL instance.
+services:
+  db:
+    image: postgres:17-alpine
+    container_name: jeevan-cars-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: jeevan
+      POSTGRES_PASSWORD: jeevan_dev_password
+      POSTGRES_DB: jeevan_cars
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - jeevan-cars-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U jeevan -d jeevan_cars"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  jeevan-cars-pgdata:

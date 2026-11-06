@@ -1,0 +1,297 @@
+// Jeevan Cars — database schema (Prisma 7, PostgreSQL)
+// Connection URL lives in prisma.config.ts (Prisma 7 no longer reads it here).
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─────────────────────────────────────────────────────────────
+// Enums
+// ─────────────────────────────────────────────────────────────
+
+enum FuelType {
+  PETROL
+  DIESEL
+  CNG
+  LPG
+  ELECTRIC
+  HYBRID
+  PETROL_CNG
+}
+
+enum Transmission {
+  MANUAL
+  AUTOMATIC
+  AMT
+  CVT
+  DCT
+}
+
+enum VehicleCondition {
+  EXCELLENT
+  VERY_GOOD
+  GOOD
+  FAIR
+}
+
+enum AvailabilityStatus {
+  AVAILABLE
+  RESERVED
+  SOLD
+}
+
+enum PublicationStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum EnquiryStatus {
+  NEW
+  CONTACTED
+  FOLLOW_UP
+  CONVERTED
+  CLOSED
+}
+
+enum EnquirySource {
+  VEHICLE_PAGE
+  CONTACT_PAGE
+}
+
+// ─────────────────────────────────────────────────────────────
+// Admin & authentication
+// ─────────────────────────────────────────────────────────────
+
+model Admin {
+  id           String         @id @default(cuid())
+  email        String         @unique
+  name         String
+  passwordHash String
+  lastLoginAt  DateTime?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  sessions     AdminSession[]
+}
+
+/// Server-side session. The browser only holds a random token in an
+/// httpOnly cookie; we store its SHA-256 hash so a DB leak can't hijack sessions.
+model AdminSession {
+  id         String   @id @default(cuid())
+  tokenHash  String   @unique
+  adminId    String
+  admin      Admin    @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  expiresAt  DateTime
+  lastSeenAt DateTime @default(now())
+  ipAddress  String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+
+  @@index([adminId])
+  @@index([expiresAt])
+}
+
+// ─────────────────────────────────────────────────────────────
+// Taxonomy
+// ─────────────────────────────────────────────────────────────
+
+model VehicleCategory {
+  id            String    @id @default(cuid())
+  name          String    @unique
+  slug          String    @unique
+  description   String?
+  imageUrl      String?
+  imagePublicId String?
+  sortOrder     Int       @default(0)
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  vehicles      Vehicle[]
+
+  @@index([isActive, sortOrder])
+}
+
+model VehicleBrand {
+  id           String    @id @default(cuid())
+  name         String    @unique
+  slug         String    @unique
+  logoUrl      String?
+  logoPublicId String?
+  isActive     Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  vehicles     Vehicle[]
+
+  @@index([isActive, name])
+}
+
+// ─────────────────────────────────────────────────────────────
+// Inventory
+// ─────────────────────────────────────────────────────────────
+
+model Vehicle {
+  id          String @id @default(cuid())
+  name        String
+  slug        String @unique
+  description String @db.Text
+
+  categoryId String
+  category   VehicleCategory @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  brandId    String
+  brand      VehicleBrand    @relation(fields: [brandId], references: [id], onDelete: Restrict)
+
+  model             String
+  variant           String?
+  manufacturingYear Int
+  registrationYear  Int?
+  kilometresDriven  Int
+  fuelType          FuelType
+  transmission      Transmission
+  ownershipCount    Int              @default(1)
+  condition         VehicleCondition @default(GOOD)
+  colour            String?
+  seatingCapacity   Int?
+
+  /// INR. Nullable so "Contact for Price" listings need not carry one.
+  price     Decimal? @db.Decimal(12, 2)
+  showPrice Boolean  @default(true)
+
+  availability AvailabilityStatus @default(AVAILABLE)
+  status       PublicationStatus  @default(DRAFT)
+  isFeatured   Boolean            @default(false)
+
+  /// Private — never selected by public queries.
+  registrationNumber String?
+  internalNotes      String? @db.Text
+
+  publishedAt DateTime?
+  soldAt      DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  images         VehicleImage[]
+  specifications VehicleSpecification[]
+  enquiries      Enquiry[]
+
+  @@index([status, availability, createdAt])
+  @@index([status, isFeatured])
+  @@index([categoryId])
+  @@index([brandId])
+  @@index([manufacturingYear])
+  @@index([price])
+  @@index([fuelType])
+  @@index([transmission])
+}
+
+/// Exactly one primary image per vehicle is enforced by a partial unique
+/// index added in the initial migration (Prisma can't express it):
+///   CREATE UNIQUE INDEX "VehicleImage_one_primary_per_vehicle"
+///   ON "VehicleImage"("vehicleId") WHERE "isPrimary";
+model VehicleImage {
+  id        String   @id @default(cuid())
+  vehicleId String
+  vehicle   Vehicle  @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  url       String
+  publicId  String   @unique
+  width     Int
+  height    Int
+  bytes     Int
+  altText   String?
+  sortOrder Int      @default(0)
+  isPrimary Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([vehicleId, sortOrder])
+}
+
+/// Free-form extra specs so commercial vehicles (payload, axle config, body
+/// length) and feature lists don't require schema changes.
+model VehicleSpecification {
+  id        String  @id @default(cuid())
+  vehicleId String
+  vehicle   Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  group     String  @default("General")
+  label     String
+  value     String
+  sortOrder Int     @default(0)
+
+  @@unique([vehicleId, label])
+  @@index([vehicleId, sortOrder])
+}
+
+// ─────────────────────────────────────────────────────────────
+// Leads
+// ─────────────────────────────────────────────────────────────
+
+model Enquiry {
+  id      String        @id @default(cuid())
+  name    String
+  phone   String
+  email   String?
+  message String        @db.Text
+  source  EnquirySource
+
+  vehicleId    String?
+  vehicle      Vehicle? @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
+  /// Vehicle name at submission time — keeps context if the listing is deleted.
+  vehicleLabel String?
+
+  status     EnquiryStatus @default(NEW)
+  adminNotes String?       @db.Text
+  followUpAt DateTime?
+
+  /// SHA-256 of IP + secret; for abuse review without storing raw IPs.
+  ipHash    String?
+  userAgent String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, createdAt])
+  @@index([vehicleId])
+  @@index([createdAt])
+}
+
+// ─────────────────────────────────────────────────────────────
+// Site configuration & infrastructure
+// ─────────────────────────────────────────────────────────────
+
+/// Singleton row (id = 1). Contact details, WhatsApp number and SEO defaults
+/// editable from /admin/settings instead of being hardcoded.
+model SiteSettings {
+  id                Int      @id @default(1)
+  businessName      String   @default("Jeevan Cars")
+  tagline           String?
+  phone             String?
+  whatsappNumber    String?
+  email             String?
+  addressLine1      String?
+  addressLine2      String?
+  city              String?
+  state             String?
+  postalCode        String?
+  mapEmbedUrl       String?
+  businessHours     String?
+  facebookUrl       String?
+  instagramUrl      String?
+  youtubeUrl        String?
+  heroImageUrl      String?
+  heroImagePublicId String?
+  seoTitle          String?
+  seoDescription    String?
+  updatedAt         DateTime @updatedAt
+}
+
+/// Fixed-window rate-limit counters for public endpoints (enquiries, login).
+/// Postgres-backed so limits hold across serverless instances without Redis.
+model RateLimit {
+  key       String   @id
+  count     Int      @default(0)
+  expiresAt DateTime
+
+  @@index([expiresAt])
+}
