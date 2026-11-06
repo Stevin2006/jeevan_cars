@@ -1,12 +1,11 @@
+import "@/lib/validations/zod-config";
 import { z } from "zod";
 
 export const PASSWORD_MIN_LENGTH = 12;
 
 export const loginSchema = z.object({
-  email: z
-    .email("Enter a valid email address")
-    .max(120)
-    .transform((value) => value.trim().toLowerCase()),
+  // Trim before validating so a pasted address with stray spaces still works.
+  email: z.string().trim().toLowerCase().pipe(z.email("Enter a valid email address").max(120)),
   password: z.string().min(1, "Enter your password").max(200),
   next: z.string().max(300).optional(),
 });

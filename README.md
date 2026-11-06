@@ -28,18 +28,33 @@ Health check: `GET /api/health` returns `{"status":"ok","database":"up"}`, or HT
 
 ## Scripts
 
-| Script                      | Purpose                                                  |
-| --------------------------- | -------------------------------------------------------- |
-| `dev` / `build` / `start`   | Next.js development, production build, production server |
-| `lint` / `typecheck`        | ESLint; route type generation + `tsc --noEmit`           |
-| `format` / `format:check`   | Prettier (with Tailwind class sorting)                   |
-| `db:up` / `db:down`         | Start / stop the local Docker database                   |
-| `db:migrate`                | Create and apply migrations in development               |
-| `db:deploy`                 | Apply pending migrations in production                   |
-| `db:seed`                   | Idempotent base data (safe to re-run)                    |
-| `db:seed:sample`            | Development-only sample inventory (Unsplash photos)      |
-| `db:studio`                 | Prisma Studio                                            |
-| `admin:create [-- --reset]` | Create the single admin, or reset their credentials      |
+| Script                      | Purpose                                                      |
+| --------------------------- | ------------------------------------------------------------ |
+| `dev` / `build` / `start`   | Next.js development, production build, production server     |
+| `lint` / `typecheck`        | ESLint; route type generation + `tsc --noEmit`               |
+| `format` / `format:check`   | Prettier (with Tailwind class sorting)                       |
+| `db:up` / `db:down`         | Start / stop the local Docker database                       |
+| `db:migrate`                | Create and apply migrations in development                   |
+| `db:deploy`                 | Apply pending migrations in production                       |
+| `db:seed`                   | Idempotent base data (safe to re-run)                        |
+| `db:seed:sample`            | Development-only sample inventory (Unsplash photos)          |
+| `db:studio`                 | Prisma Studio                                                |
+| `test` / `test:watch`       | Unit + integration tests (Vitest) against `jeevan_cars_test` |
+| `test:e2e`                  | Rebuilds the e2e database, then runs Playwright              |
+| `admin:create [-- --reset]` | Create the single admin, or reset their credentials          |
+
+## Testing
+
+```bash
+docker exec jeevan-cars-db psql -U jeevan -d postgres -c "CREATE DATABASE jeevan_cars_test"   # once
+DATABASE_URL="postgresql://jeevan:jeevan_dev_password@localhost:5432/jeevan_cars_test" npx prisma migrate deploy
+npm test            # unit + integration (truncates jeevan_cars_test between tests)
+npm run test:e2e    # production build on port 3100 against a fresh jeevan_cars_e2e database
+```
+
+- Integration tests refuse to run unless `DATABASE_URL` points at a `*_test` database.
+- Cloudinary and Next.js request APIs are mocked in Vitest; the e2e suite uses the system Chrome.
+- E2E builds into `.next-e2e`, so it can run while `npm run dev` is up. Don't run `npm run build` while the dev server is running — they share `.next`.
 
 ## Notes
 

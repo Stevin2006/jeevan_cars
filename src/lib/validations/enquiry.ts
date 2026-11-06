@@ -1,3 +1,4 @@
+import "@/lib/validations/zod-config";
 import { z } from "zod";
 
 /** Accepts "98765 43210", "+91-98765-43210", "098765 43210" → "+919876543210". */

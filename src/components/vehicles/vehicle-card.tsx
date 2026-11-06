@@ -10,10 +10,14 @@ import { cn } from "@/lib/utils";
 export function VehicleCard({
   vehicle,
   priority = false,
+  eager = priority,
   className,
 }: {
   vehicle: VehicleCardData;
+  /** The likely LCP image: load eagerly at high priority. */
   priority?: boolean;
+  /** Above the fold but not the LCP: load eagerly at normal priority. */
+  eager?: boolean;
   className?: string;
 }) {
   const title = `${vehicle.brand.name} ${vehicle.model}`;
@@ -32,7 +36,8 @@ export function VehicleCard({
             src={vehicle.image.url}
             alt={vehicle.image.altText ?? title}
             fill
-            priority={priority}
+            loading={eager ? "eager" : "lazy"}
+            fetchPriority={priority ? "high" : undefined}
             sizes="(min-width: 1280px) 400px, (min-width: 768px) 50vw, 100vw"
             className="object-cover transition-transform duration-700 ease-out-quart group-hover:scale-[1.04]"
           />

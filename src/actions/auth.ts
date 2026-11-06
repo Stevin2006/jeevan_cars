@@ -8,13 +8,16 @@ import { hashPassword, verifyPassword } from "@/lib/auth/password";
 import { requireAdmin } from "@/lib/auth/require-admin";
 import { createSession, destroySession } from "@/lib/auth/session";
 import { prisma } from "@/lib/prisma";
-import { rateLimit } from "@/lib/rate-limit";
+import { clearRateLimit, isRateLimited, rateLimit } from "@/lib/rate-limit";
 import { getRequestMeta } from "@/lib/request-meta";
 import { loginSchema, changePasswordSchema } from "@/lib/validations/auth";
 
 // Verified when no admin matches, so response time doesn't reveal valid emails.
 let dummyHash: Promise<string> | undefined;
 const getDummyHash = () => (dummyHash ??= hashPassword(randomBytes(16).toString("hex")));
+
+const LOGIN_LIMITS = { ip: 10, email: 5 } as const;
+const LOGIN_WINDOW_SECONDS = 900;
 
 const GENERIC_LOGIN_ERROR = "That email and password combination isn't right.";
 
@@ -39,18 +42,28 @@ export async function login(input: unknown): Promise<ActionResult> {
   const { email, password, next } = parsed.data;
   const meta = await getRequestMeta();
 
-  const [byIp, byEmail] = await Promise.all([
-    rateLimit(`login:ip:${meta.ipHash}`, { limit: 10, windowSeconds: 900 }),
-    rateLimit(`login:email:${email}`, { limit: 5, windowSeconds: 900 }),
+  // Only failed attempts count, so a busy admin signing in often is never locked out.
+  const ipKey = `login:ip:${meta.ipHash}`;
+  const emailKey = `login:email:${email}`;
+  const [ipBlocked, emailBlocked] = await Promise.all([
+    isRateLimited(ipKey, LOGIN_LIMITS.ip),
+    isRateLimited(emailKey, LOGIN_LIMITS.email),
   ]);
-  if (!byIp.allowed || !byEmail.allowed) {
+  if (ipBlocked || emailBlocked) {
     return { ok: false, error: "Too many sign-in attempts. Please wait 15 minutes and try again." };
   }
 
   const admin = await prisma.admin.findUnique({ where: { email } });
   const valid = await verifyPassword(admin?.passwordHash ?? (await getDummyHash()), password);
-  if (!admin || !valid) return { ok: false, error: GENERIC_LOGIN_ERROR };
+  if (!admin || !valid) {
+    await Promise.all([
+      rateLimit(ipKey, { limit: LOGIN_LIMITS.ip, windowSeconds: LOGIN_WINDOW_SECONDS }),
+      rateLimit(emailKey, { limit: LOGIN_LIMITS.email, windowSeconds: LOGIN_WINDOW_SECONDS }),
+    ]);
+    return { ok: false, error: GENERIC_LOGIN_ERROR };
+  }
 
+  await clearRateLimit(emailKey);
   await createSession(admin.id, meta);
   await prisma.admin.update({ where: { id: admin.id }, data: { lastLoginAt: new Date() } });
   redirect(safeNext(next));

@@ -43,3 +43,8 @@ next-env.d.ts
 
 # prisma client
 /src/generated
+
+# test artefacts
+/.next-e2e
+/test-results
+/playwright-report

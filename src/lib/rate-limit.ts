@@ -36,3 +36,13 @@ export async function rateLimit(
     resetAt: row?.expiresAt ?? new Date(Date.now() + windowSeconds * 1000),
   };
 }
+
+/** True while `key` has already used up `limit` attempts in its current window. Doesn't count. */
+export async function isRateLimited(key: string, limit: number): Promise<boolean> {
+  const row = await prisma.rateLimit.findUnique({ where: { key } });
+  return Boolean(row && row.expiresAt > new Date() && row.count >= limit);
+}
+
+export async function clearRateLimit(key: string) {
+  await prisma.rateLimit.deleteMany({ where: { key } });
+}

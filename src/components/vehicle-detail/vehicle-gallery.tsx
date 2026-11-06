@@ -58,7 +58,8 @@ export function VehicleGallery({ images, title }: { images: GalleryImage[]; titl
               src={current.url}
               alt={current.altText ?? `${title} — photo ${index + 1}`}
               fill
-              priority={index === 0}
+              loading={index === 0 ? "eager" : "lazy"}
+              fetchPriority={index === 0 ? "high" : undefined}
               sizes="(min-width: 1024px) 58vw, 100vw"
               className="pointer-events-none object-cover select-none"
               draggable={false}

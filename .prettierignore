@@ -3,3 +3,6 @@ node_modules
 src/generated
 prisma/migrations
 package-lock.json
+.next-e2e
+test-results
+playwright-report

@@ -1,27 +1,10 @@
-"use client";
-
 import Link from "next/link";
-import { motion, type Variants } from "motion/react";
 import { ArrowDown, ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { InventoryStats } from "@/lib/data/vehicles";
 
-const EASE = [0.25, 1, 0.5, 1] as const;
-
-const container: Variants = {
-  hidden: {},
-  shown: { transition: { staggerChildren: 0.12, delayChildren: 0.25 } },
-};
-
-const line: Variants = {
-  hidden: { y: "110%" },
-  shown: { y: "0%", transition: { duration: 0.9, ease: EASE } },
-};
-
-const fade: Variants = {
-  hidden: { opacity: 0, y: 16 },
-  shown: { opacity: 1, y: 0, transition: { duration: 0.7, ease: EASE } },
-};
+/** Staggered CSS entrance; `delay` in seconds. */
+const enter = (delay: number) => ({ animationDelay: `${delay}s` });
 
 function Readout({ label, value }: { label: string; value: number }) {
   return (
@@ -36,42 +19,40 @@ function Readout({ label, value }: { label: string; value: number }) {
 
 export function HeroContent({ city, stats }: { city: string | null; stats: InventoryStats }) {
   return (
-    <motion.div
-      className="relative container-page flex flex-1 flex-col justify-end pt-[calc(var(--nav-height)+3rem)] pb-10 sm:pb-14"
-      variants={container}
-      initial="hidden"
-      animate="shown"
-    >
-      <motion.p variants={fade} className="mb-6 flex items-center gap-3 label-caps text-amber">
+    <div className="relative container-page flex flex-1 flex-col justify-end pt-[calc(var(--nav-height)+3rem)] pb-10 sm:pb-14">
+      <p
+        className="mb-6 flex animate-hero-rise items-center gap-3 label-caps text-amber"
+        style={enter(0.1)}
+      >
         <span aria-hidden className="h-px w-8 bg-amber" />
         Pre-owned cars &amp; commercial vehicles{city ? ` · ${city}` : ""}
-      </motion.p>
+      </p>
 
       <h1
         id="hero-heading"
         className="font-display text-[clamp(2.75rem,8vw,6.5rem)] leading-[0.92] font-extrabold tracking-[-0.035em]"
       >
         <span className="block overflow-hidden pb-[0.06em]">
-          <motion.span variants={line} className="block">
+          <span className="block animate-hero-line" style={enter(0.15)}>
             Driven before.
-          </motion.span>
+          </span>
         </span>
         <span className="block overflow-hidden pb-[0.06em]">
-          <motion.span variants={line} className="block text-paper/55">
+          <span className="block animate-hero-line text-paper/55" style={enter(0.27)}>
             Ready for more<span className="text-amber">.</span>
-          </motion.span>
+          </span>
         </span>
       </h1>
 
-      <motion.p
-        variants={fade}
-        className="mt-6 max-w-xl text-base leading-relaxed text-pretty text-paper/75 sm:text-lg"
+      <p
+        className="mt-6 max-w-xl animate-hero-rise text-base leading-relaxed text-pretty text-paper/75 sm:text-lg"
+        style={enter(0.35)}
       >
         Inspected hatchbacks, sedans, SUVs and working vehicles — honestly described, fairly priced,
         and ready for their next road.
-      </motion.p>
+      </p>
 
-      <motion.div variants={fade} className="mt-9 flex flex-wrap gap-3">
+      <div className="mt-9 flex animate-hero-rise flex-wrap gap-3" style={enter(0.45)}>
         <Button asChild variant="accent" size="xl">
           <Link href="/vehicles">
             Explore vehicles
@@ -81,11 +62,11 @@ export function HeroContent({ city, stats }: { city: string | null; stats: Inven
         <Button asChild variant="inverse" size="xl">
           <Link href="/contact">Contact us</Link>
         </Button>
-      </motion.div>
+      </div>
 
-      <motion.div
-        variants={fade}
-        className="mt-14 flex items-end justify-between gap-6 border-t border-white/15 pt-6"
+      <div
+        className="mt-14 flex animate-hero-rise items-end justify-between gap-6 border-t border-white/15 pt-6"
+        style={enter(0.55)}
       >
         <div className="flex gap-8 sm:gap-14">
           <Readout label="In stock" value={stats.inStock} />
@@ -99,7 +80,7 @@ export function HeroContent({ city, stats }: { city: string | null; stats: Inven
           Scroll to explore
           <ArrowDown className="size-4" aria-hidden />
         </a>
-      </motion.div>
-    </motion.div>
+      </div>
+    </div>
   );
 }

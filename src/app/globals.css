@@ -24,7 +24,7 @@
 
   /* Availability */
   --status-available: #1f7a4d;
-  --status-reserved: #a8640a;
+  --status-reserved: #8a5300;
   --status-sold: #9b3838;
 
   /* shadcn semantic mapping */
@@ -171,6 +171,34 @@
     pointer-events: none;
     opacity: 0.07;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+}
+
+/*
+ * Hero entrance. CSS rather than JS so it starts at first paint instead of
+ * after hydration — the hero copy is the page's LCP element.
+ */
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+@keyframes hero-line {
+  from {
+    transform: translateY(110%);
+  }
+}
+@utility animate-hero-rise {
+  animation: hero-rise 0.7s var(--ease-out-quart) both;
+}
+@utility animate-hero-line {
+  animation: hero-line 0.9s var(--ease-out-quart) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-hero-rise,
+  .animate-hero-line {
+    animation: none;
   }
 }
 

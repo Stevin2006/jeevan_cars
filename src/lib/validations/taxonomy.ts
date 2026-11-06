@@ -1,3 +1,4 @@
+import "@/lib/validations/zod-config";
 import { z } from "zod";
 
 export const taxonomySchema = z.object({

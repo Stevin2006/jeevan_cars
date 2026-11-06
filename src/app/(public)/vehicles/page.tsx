@@ -104,7 +104,12 @@ async function CatalogueResults({
           <ul className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
             {result.vehicles.map((vehicle, index) => (
               <li key={vehicle.id} className="flex">
-                <VehicleCard vehicle={vehicle} priority={index < 3} className="w-full" />
+                <VehicleCard
+                  vehicle={vehicle}
+                  priority={index === 0}
+                  eager={index < 3}
+                  className="w-full"
+                />
               </li>
             ))}
           </ul>

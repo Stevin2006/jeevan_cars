@@ -1,9 +1,11 @@
+import "@/lib/validations/zod-config";
 import { z } from "zod";
 import { normalizeIndianMobile } from "@/lib/validations/enquiry";
 
 const optional = (schema: z.ZodType<string>) =>
   z.preprocess(
-    (value) => (typeof value === "string" && value.trim() === "" ? null : value),
+    (value) =>
+      value === undefined || (typeof value === "string" && value.trim() === "") ? null : value,
     schema.nullable(),
   );
 

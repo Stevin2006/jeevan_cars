@@ -29,7 +29,7 @@ export async function Hero() {
             src={image.url}
             alt={image.alt}
             fill
-            priority
+            preload
             quality={75}
             sizes="100vw"
             className="object-cover object-[60%_center]"

@@ -31,6 +31,8 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // E2E builds use their own folder so they can run alongside `next dev`.
+  distDir: process.env.NEXT_DIST_DIR || ".next",
   cacheComponents: true,
   partialPrefetching: true,
   poweredByHeader: false,

@@ -5,7 +5,7 @@ import Image, { type ImageLoader, type ImageProps } from "next/image";
 const CLOUDINARY_UPLOAD = /^(https:\/\/res\.cloudinary\.com\/[^/]+\/image\/upload\/)(.+)$/;
 
 /** Delegates resizing to Cloudinary (f_auto/q_auto) instead of the Next.js optimizer. */
-const cloudinaryLoader: ImageLoader = ({ src, width, quality }) => {
+export const cloudinaryLoader: ImageLoader = ({ src, width, quality }) => {
   const match = CLOUDINARY_UPLOAD.exec(src);
   if (!match) return src;
   const [, base, rest] = match;
