@@ -12,7 +12,7 @@ Everything below assumes the repository is on GitHub and you have admin access t
    ```bash
    openssl rand -base64 48
    ```
-3. **Pick the regions.** The Neon database is in AWS `us-east-1`. Put Vercel Functions in the matching region (`iad1`, Washington D.C.) so database calls stay short. Public pages are cached, so visitors in India mostly hit Vercel's edge, not the database. If you'd rather keep everything closer to Kerala, create the Neon project in an Asia-Pacific region and pick the nearest Vercel region before launch — moving later means a data migration.
+3. **Pick the regions.** The Neon database is in AWS `us-east-1`. Put Vercel Functions in the matching region (`iad1`, Washington D.C.) so database calls stay short. Public pages are cached, so visitors in India mostly hit Vercel's edge, not the database. If you'd rather keep everything closer to Kanyakumari, create the Neon project in an Asia-Pacific region and pick the nearest Vercel region before launch — moving later means a data migration.
 
 ## 1. Database (Neon)
 

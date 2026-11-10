@@ -132,9 +132,9 @@ export function SettingsForm({ defaults }: { defaults: SiteSettingsInput }) {
           wide: true,
           hint: "One line per day range, e.g. Mon–Sat 9:30 am – 7 pm",
         })}
-        {field("mapEmbedUrl", "Google Maps embed link", {
+        {field("mapEmbedUrl", "Google Maps embed link (optional)", {
           wide: true,
-          hint: 'Google Maps → Share → Embed a map → copy only the src="…" link.',
+          hint: 'The map is built from your address automatically (a Plus Code like 58X2+7QF pins it exactly). To show your Google listing instead: Google Maps → Share → Embed a map → copy only the src="…" link.',
         })}
       </Group>
 

@@ -9,7 +9,15 @@ import {
 } from "@/lib/format";
 import { formatRelative } from "@/lib/format-date";
 import { slugify } from "@/lib/slug";
-import { formatAddressLines, getTelHref, getWhatsAppHref } from "@/lib/contact";
+import {
+  formatAddressLines,
+  getDirectionsUrl,
+  getMapQuery,
+  getMapsEmbedUrl,
+  getMapsSearchUrl,
+  getTelHref,
+  getWhatsAppHref,
+} from "@/lib/contact";
 
 describe("price formatting", () => {
   it("uses Indian digit grouping", () => {
@@ -100,5 +108,48 @@ describe("formatRelative", () => {
   });
   it("falls back to a date after a week", () => {
     expect(formatRelative(new Date(now - 10 * 86_400_000), now)).toBe("27 Oct 2026");
+  });
+});
+
+describe("map links", () => {
+  const base = {
+    businessName: "Jeevan Cars",
+    addressLine1: "58X2+7QF, near Monday Market",
+    addressLine2: "Kanyakumari District",
+    city: "Thingalnagar",
+    state: "Tamil Nadu",
+    postalCode: "629802",
+  };
+
+  it("prefers the Plus Code with town and state", () => {
+    expect(getMapQuery(base)).toBe("58X2+7QF, Thingalnagar, Tamil Nadu");
+  });
+
+  it("falls back to name and full address without a Plus Code", () => {
+    expect(getMapQuery({ ...base, addressLine1: "12 Main Road" })).toBe(
+      "Jeevan Cars, 12 Main Road, Kanyakumari District, Thingalnagar, Tamil Nadu 629802",
+    );
+  });
+
+  it("returns null when there is no address", () => {
+    expect(
+      getMapQuery({
+        businessName: "Jeevan Cars",
+        addressLine1: null,
+        addressLine2: null,
+        city: null,
+        state: null,
+        postalCode: null,
+      }),
+    ).toBeNull();
+  });
+
+  it("encodes the + in Plus Codes for every Google Maps URL", () => {
+    const query = "58X2+7QF, Thingalnagar, Tamil Nadu";
+    expect(getMapsEmbedUrl(query)).toBe(
+      "https://www.google.com/maps?q=58X2%2B7QF%2C%20Thingalnagar%2C%20Tamil%20Nadu&z=16&output=embed",
+    );
+    expect(getDirectionsUrl(query)).toContain("destination=58X2%2B7QF");
+    expect(getMapsSearchUrl(query)).toContain("api=1&query=58X2%2B7QF");
   });
 });

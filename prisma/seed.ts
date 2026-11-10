@@ -6,6 +6,7 @@
 import "dotenv/config";
 import { createPrismaClient } from "@/lib/db/create-client";
 import { slugify } from "@/lib/slug";
+import { DEALERSHIP_CONTACT } from "./dealership";
 
 const CATEGORIES: { name: string; description: string }[] = [
   { name: "Hatchbacks", description: "Compact, efficient city cars." },
@@ -68,10 +69,11 @@ async function main() {
       });
     }
 
+    // Only fills a brand-new database; edits made in Admin › Settings are kept.
     await prisma.siteSettings.upsert({
       where: { id: 1 },
       update: {},
-      create: { id: 1, businessName: "Jeevan Cars" },
+      create: { id: 1, ...DEALERSHIP_CONTACT },
     });
 
     const [categories, brands] = await Promise.all([

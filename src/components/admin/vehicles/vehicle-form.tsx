@@ -521,7 +521,7 @@ export function VehicleForm({
             >
               <Input
                 id="registrationNumber"
-                placeholder="KL 07 AB 1234"
+                placeholder="TN 74 AB 1234"
                 className="uppercase"
                 {...register("registrationNumber")}
                 {...aria("registrationNumber")}

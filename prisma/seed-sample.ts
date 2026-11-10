@@ -8,6 +8,7 @@
 import "dotenv/config";
 import { createPrismaClient } from "@/lib/db/create-client";
 import { slugify } from "@/lib/slug";
+import { DEALERSHIP_CONTACT } from "./dealership";
 import type { Prisma } from "@/generated/prisma/client";
 import type {
   AvailabilityStatus,
@@ -464,20 +465,14 @@ async function main() {
       created++;
     }
 
-    // Demo contact details so the contact page and WhatsApp actions can be
-    // exercised. Only applied while the settings are still blank.
+    // Real contact details plus a WhatsApp number and sample hero so every
+    // contact action can be exercised. Only applied while settings are blank.
     await prisma.siteSettings.updateMany({
-      where: { id: 1, phone: null },
+      where: { id: 1, whatsappNumber: null },
       data: {
+        ...DEALERSHIP_CONTACT,
         tagline: "Pre-owned cars and commercial vehicles you can trust",
-        phone: "+91 98765 43210",
-        whatsappNumber: "+91 98765 43210",
-        email: "sales@jeevancars.test",
-        addressLine1: "Sample address — update in Admin › Settings",
-        city: "Kochi",
-        state: "Kerala",
-        postalCode: "682001",
-        businessHours: "Mon–Sat 9:30 am – 7:00 pm\nSun 10:00 am – 2:00 pm",
+        whatsappNumber: DEALERSHIP_CONTACT.phone,
         heroImageUrl: unsplash("photo-1773369236999-89d2b16546c4"),
       },
     });

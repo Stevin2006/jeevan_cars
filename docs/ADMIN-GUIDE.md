@@ -47,7 +47,7 @@ Add or rename them from **Categories** and **Brands**. A category or brand that 
 ## Settings
 
 - **Business, contact, address and hours** — appear in the footer, Contact page and WhatsApp/call buttons.
-- **Google Maps** — in Google Maps, choose _Share › Embed a map_ and paste only the link inside `src="…"`.
+- **Google Maps** — the map on the homepage and Contact page is placed automatically from the address; keep the Plus Code (e.g. `58X2+7QF`) in the first address line so the pin lands exactly. Visitors get _Get directions_ and _Open in Maps_ buttons. To show your Google Business listing instead, choose _Share › Embed a map_ in Google Maps and paste only the link inside `src="…"`.
 - **Homepage hero** — a wide landscape photo (at least 2400 px across) with the subject on the right; the headline sits on the left.
 - **Password** — change it here; other devices are signed out automatically.
 

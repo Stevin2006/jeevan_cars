@@ -1,4 +1,5 @@
 import { JsonLd } from "@/components/seo/json-ld";
+import { getMapQuery, getMapsSearchUrl } from "@/lib/contact";
 import { getSiteSettings } from "@/lib/data/settings";
 import { env } from "@/lib/env";
 
@@ -6,6 +7,7 @@ import { env } from "@/lib/env";
 export async function DealerJsonLd() {
   const settings = await getSiteSettings();
   const sameAs = [settings.facebookUrl, settings.instagramUrl, settings.youtubeUrl].filter(Boolean);
+  const mapQuery = getMapQuery(settings);
 
   return (
     <JsonLd
@@ -30,6 +32,7 @@ export async function DealerJsonLd() {
             addressCountry: "IN",
           },
         }),
+        ...(mapQuery && { hasMap: getMapsSearchUrl(mapQuery) }),
         ...(sameAs.length > 0 && { sameAs }),
       }}
     />
