@@ -16,6 +16,12 @@ vi.mock("next/cache", () => ({
   revalidatePath: vi.fn(),
 }));
 
+// connection() marks request-time work inside Next; tests are always "at request time".
+vi.mock("next/server", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("next/server")>()),
+  connection: async () => undefined,
+}));
+
 // Request-scoped APIs backed by an in-memory request per test.
 vi.mock("next/headers", () => ({
   headers: async () => new Headers([...requestState.headers]),

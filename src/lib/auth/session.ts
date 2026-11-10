@@ -1,6 +1,7 @@
 import "server-only";
 import { createHash, randomBytes } from "node:crypto";
 import { cookies } from "next/headers";
+import { connection } from "next/server";
 import { cache } from "react";
 import { prisma } from "@/lib/prisma";
 import { env } from "@/lib/env";
@@ -62,6 +63,8 @@ export async function createSession(
 export const getSession = cache(async (): Promise<SessionAdmin | null> => {
   const token = (await cookies()).get(SESSION_COOKIE)?.value;
   if (!token || token.length > 100) return null;
+  // Session checks are always per-request (database + clock), never prerendered.
+  await connection();
 
   const session = await prisma.adminSession.findUnique({
     where: { tokenHash: hashToken(token) },

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Dialog } from "radix-ui";
 import {
@@ -37,27 +37,44 @@ const NAV = [
 const COLLAPSE_KEY = "jc-admin-sidebar-collapsed";
 
 type ShellProps = {
-  admin: { name: string; email: string };
-  newEnquiries: number;
+  /** Signed-in admin's name and email; streams in (see AdminAccount). */
+  account: React.ReactNode;
+  /** New-enquiry count as a pill (expanded sidebar) and a dot (collapsed). */
+  enquiryBadge: React.ReactNode;
+  enquiryDot: React.ReactNode;
   children: React.ReactNode;
 };
 
-function NavList({
-  pathname,
-  collapsed,
-  newEnquiries,
-  onNavigate,
-}: {
-  pathname: string;
+type NavListProps = {
+  /** Null in the prerendered fallback, where no item is marked active. */
+  pathname: string | null;
   collapsed: boolean;
-  newEnquiries: number;
+  enquiryBadge: React.ReactNode;
+  enquiryDot: React.ReactNode;
   onNavigate?: () => void;
-}) {
+};
+
+/** Reads the route; kept inside <Suspense> so the shell can prerender. */
+function RouteAwareNavList(props: Omit<NavListProps, "pathname">) {
+  return <NavList {...props} pathname={usePathname()} />;
+}
+
+/** Nav list that highlights the current page once the route is known. */
+function AdminNav(props: Omit<NavListProps, "pathname">) {
+  return (
+    <Suspense fallback={<NavList {...props} pathname={null} />}>
+      <RouteAwareNavList {...props} />
+    </Suspense>
+  );
+}
+
+function NavList({ pathname, collapsed, enquiryBadge, enquiryDot, onNavigate }: NavListProps) {
   return (
     <ul className="space-y-1">
       {NAV.map((item) => {
-        const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
-        const badge = item.href === "/admin/enquiries" && newEnquiries > 0 ? newEnquiries : null;
+        const active =
+          pathname !== null && (pathname === item.href || pathname.startsWith(`${item.href}/`));
+        const isEnquiries = item.href === "/admin/enquiries";
         const link = (
           <Link
             href={item.href}
@@ -72,17 +89,7 @@ function NavList({
           >
             <item.icon className="size-4 shrink-0" aria-hidden />
             {!collapsed && <span className="truncate">{item.label}</span>}
-            {badge !== null &&
-              (collapsed ? (
-                <span
-                  className="absolute top-1.5 right-1.5 size-2 rounded-full bg-amber"
-                  aria-label={`${badge} new`}
-                />
-              ) : (
-                <span className="tabular ml-auto rounded-full bg-amber px-1.5 font-mono text-[0.6875rem] leading-5 text-ink">
-                  {badge}
-                </span>
-              ))}
+            {isEnquiries && (collapsed ? enquiryDot : enquiryBadge)}
           </Link>
         );
         return (
@@ -102,7 +109,7 @@ function NavList({
   );
 }
 
-function AccountFooter({ admin, collapsed }: { admin: ShellProps["admin"]; collapsed: boolean }) {
+function AccountFooter({ account, collapsed }: { account: React.ReactNode; collapsed: boolean }) {
   return (
     <div className={cn("space-y-1 border-t pt-3", collapsed && "flex flex-col items-center")}>
       <a
@@ -131,18 +138,12 @@ function AccountFooter({ admin, collapsed }: { admin: ShellProps["admin"]; colla
           {!collapsed && "Sign out"}
         </button>
       </form>
-      {!collapsed && (
-        <div className="px-2.5 pt-2">
-          <p className="truncate text-sm font-medium">{admin.name}</p>
-          <p className="truncate text-xs text-muted-foreground">{admin.email}</p>
-        </div>
-      )}
+      {!collapsed && account}
     </div>
   );
 }
 
-export function AdminShell({ admin, newEnquiries, children }: ShellProps) {
-  const pathname = usePathname();
+export function AdminShell({ account, enquiryBadge, enquiryDot, children }: ShellProps) {
   const [collapsed, setCollapsed] = useStoredFlag(COLLAPSE_KEY);
   const [mobileOpen, setMobileOpen] = useState(false);
   const toggleCollapsed = () => setCollapsed(!collapsed);
@@ -176,9 +177,9 @@ export function AdminShell({ admin, newEnquiries, children }: ShellProps) {
           </button>
         </div>
         <nav aria-label="Admin" className="mt-4 flex-1 overflow-y-auto">
-          <NavList pathname={pathname} collapsed={collapsed} newEnquiries={newEnquiries} />
+          <AdminNav collapsed={collapsed} enquiryBadge={enquiryBadge} enquiryDot={enquiryDot} />
         </nav>
-        <AccountFooter admin={admin} collapsed={collapsed} />
+        <AccountFooter account={account} collapsed={collapsed} />
       </motion.aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
@@ -224,14 +225,14 @@ export function AdminShell({ admin, newEnquiries, children }: ShellProps) {
                         </Dialog.Close>
                       </div>
                       <nav aria-label="Admin" className="mt-4 flex-1 overflow-y-auto">
-                        <NavList
-                          pathname={pathname}
+                        <AdminNav
                           collapsed={false}
-                          newEnquiries={newEnquiries}
+                          enquiryBadge={enquiryBadge}
+                          enquiryDot={enquiryDot}
                           onNavigate={() => setMobileOpen(false)}
                         />
                       </nav>
-                      <AccountFooter admin={admin} collapsed={false} />
+                      <AccountFooter account={account} collapsed={false} />
                     </motion.div>
                   </Dialog.Content>
                 </Dialog.Portal>
