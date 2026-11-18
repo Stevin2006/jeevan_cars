@@ -2,25 +2,15 @@ import Image from "next/image";
 import badge from "@/assets/brand/jeevan-cars-badge.png";
 import { PreloaderController } from "@/components/brand/preloader-controller";
 
-export const PRELOADER_SEEN_KEY = "jc-preloader-seen";
-
-/*
- * Runs while the HTML is parsed, before first paint, so the overlay never
- * flashes on visits where it shouldn't show. Shows once per browser session
- * on the homepage only; skipped for reduced motion. A failsafe clears it if
- * the page's JavaScript never takes over.
- */
-const BOOT_SCRIPT = `(function(){try{var d=document.documentElement;if(location.pathname!=="/")return;if(sessionStorage.getItem("${PRELOADER_SEEN_KEY}"))return;if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;sessionStorage.setItem("${PRELOADER_SEEN_KEY}","1");d.setAttribute("data-preloading","active");setTimeout(function(){d.removeAttribute("data-preloading")},6000)}catch(e){}})();`;
-
 /**
  * First-visit brand moment for the homepage: the badge with a red ring that
  * sweeps like a rev counter, then wipes away to reveal the hero. Hidden by
- * default (see `.site-preloader` in globals.css).
+ * default (see `.site-preloader` in globals.css); PRELOADER_BOOT_SCRIPT,
+ * loaded from the root layout, decides whether it shows.
  */
 export function SitePreloader() {
   return (
     <>
-      <script dangerouslySetInnerHTML={{ __html: BOOT_SCRIPT }} />
       <div
         id="site-preloader"
         className="site-preloader grain fixed inset-0 z-[100] flex-col items-center justify-center gap-10 bg-ink text-paper"

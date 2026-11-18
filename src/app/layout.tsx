@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Archivo, Geist, Geist_Mono } from "next/font/google";
+import { PRELOADER_BOOT_SCRIPT } from "@/components/brand/preloader-boot";
 import { MotionProvider } from "@/components/providers/motion-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { env } from "@/lib/env";
@@ -45,6 +46,19 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       // The homepage preloader's boot script sets data-preloading before hydration.
       suppressHydrationWarning
     >
+      <head>
+        {/*
+          Plain inline script, not next/script: beforeInteractive queues the
+          code until Next's async bootstrap runs, which can be after first
+          paint (the hero would flash before the preloader). The root layout
+          is only server-rendered and hydrated, never re-created on client
+          navigation, so React never has to render this script in the browser.
+        */}
+        <script
+          id="jc-preloader-boot"
+          dangerouslySetInnerHTML={{ __html: PRELOADER_BOOT_SCRIPT }}
+        />
+      </head>
       <body className="flex min-h-full flex-col">
         <MotionProvider>{children}</MotionProvider>
         <Toaster position="bottom-right" />
