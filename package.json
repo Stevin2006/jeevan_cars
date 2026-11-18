@@ -23,9 +23,9 @@
     "db:seed:sample": "tsx prisma/seed-sample.ts",
     "db:studio": "prisma studio",
     "admin:create": "tsx scripts/create-admin.ts",
-    "prod:migrate": "set -a && . ./.env.neon && set +a && prisma migrate deploy",
-    "prod:seed": "set -a && . ./.env.neon && set +a && tsx prisma/seed.ts",
-    "prod:admin": "set -a && . ./.env.neon && set +a && tsx scripts/create-admin.ts --interactive"
+    "prod:migrate": "set -a && . ./.env.neon && set +a && NODE_OPTIONS=--network-family-autoselection-attempt-timeout=2000 prisma migrate deploy",
+    "prod:seed": "set -a && . ./.env.neon && set +a && NODE_OPTIONS=--network-family-autoselection-attempt-timeout=2000 tsx prisma/seed.ts",
+    "prod:admin": "set -a && . ./.env.neon && set +a && NODE_OPTIONS=--network-family-autoselection-attempt-timeout=2000 tsx scripts/create-admin.ts --interactive"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
@@ -77,6 +77,6 @@
     "prisma@7.10.1": true
   },
   "engines": {
-    "node": ">=20.19"
+    "node": "24.x"
   }
 }

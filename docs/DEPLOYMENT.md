@@ -26,6 +26,8 @@ The project uses two connection strings:
 Locally these live in the gitignored `.env.neon`. With it in place, run once:
 
 ```bash
+# These scripts raise Node's connection-attempt timeout: from India, a TCP
+# handshake to us-east-1 takes longer than Node 24's 250 ms default.
 npm run prod:migrate   # create the tables
 npm run prod:seed      # categories, brands, empty site settings (safe to re-run)
 npm run prod:admin     # prompts for the admin email, name and password
@@ -38,24 +40,25 @@ Do **not** run `npm run db:seed:sample` against production — it refuses when `
 ## 2. App (Vercel)
 
 1. **Import** the GitHub repository in Vercel. Framework preset: Next.js. Leave the build command (`next build`) and install command (`npm install`, which runs `prisma generate`) as detected.
-2. **Settings › Functions › Region:** `iad1` (or the region matching your Neon database).
+2. **Region and Node version** are set in the repository: `vercel.json` pins Functions to `iad1` (next to the Neon database in `us-east-1`) and `package.json` pins Node `24.x`. Change both together if you move the database.
 3. **Environment variables** (Production, and Preview if you use preview deployments with a separate Neon branch):
 
-   | Name                                | Value                                                                  |
-   | ----------------------------------- | ---------------------------------------------------------------------- |
-   | `DATABASE_URL`                      | Neon **pooled** URL with `sslmode=verify-full&channel_binding=require` |
-   | `NEXT_PUBLIC_SITE_URL`              | `https://your-domain` (no trailing slash; must be https)               |
-   | `AUTH_SECRET`                       | the value generated above                                              |
-   | `TRUSTED_PROXY_HOPS`                | `1`                                                                    |
-   | `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` | your cloud name                                                        |
-   | `CLOUDINARY_API_KEY`                | API key                                                                |
-   | `CLOUDINARY_API_SECRET`             | API secret (mark _Sensitive_)                                          |
-   | `CLOUDINARY_FOLDER`                 | `jeevan-cars`                                                          |
+   | Name                                | Value                                                                                                                                       |
+   | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+   | `DATABASE_URL`                      | Neon **pooled** URL with `sslmode=verify-full&channel_binding=require`                                                                      |
+   | `NEXT_PUBLIC_SITE_URL`              | _Optional until you add a domain._ Defaults to `https://<project>.vercel.app`; set it to `https://your-domain` once a custom domain is live |
+   | `AUTH_SECRET`                       | the value generated above                                                                                                                   |
+   | `TRUSTED_PROXY_HOPS`                | `1`                                                                                                                                         |
+   | `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` | your cloud name                                                                                                                             |
+   | `CLOUDINARY_API_KEY`                | API key                                                                                                                                     |
+   | `CLOUDINARY_API_SECRET`             | API secret (mark _Sensitive_)                                                                                                               |
+   | `CLOUDINARY_FOLDER`                 | `jeevan-cars`                                                                                                                               |
 
    Leave `ALLOW_SAMPLE_IMAGES` and `DIRECT_URL` unset on Vercel.
 
 4. **Deploy.** The build validates environment variables and fails fast with a clear message if one is missing or malformed.
-5. **Domain:** add it under **Settings › Domains**, then update `NEXT_PUBLIC_SITE_URL` and redeploy so canonical URLs, the sitemap and Open Graph tags use it.
+5. **Domain:** add it under **Settings › Domains**, then set `NEXT_PUBLIC_SITE_URL` to it and redeploy so canonical URLs, the sitemap and Open Graph tags use it.
+6. **Preview deployments** need their own database. Either add a Neon branch's URLs to the _Preview_ environment, or leave Preview without variables (preview builds then fail fast instead of touching production data). The Vercel comments toolbar is allowed by the security policy on previews only.
 
 ## 3. After the first deploy
 

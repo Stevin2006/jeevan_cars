@@ -29,8 +29,21 @@ const cloudinaryEnvSchema = z.object({
   CLOUDINARY_FOLDER: z.string().min(1).default("jeevan-cars"),
 });
 
+/**
+ * On Vercel, NEXT_PUBLIC_SITE_URL may be left unset until a custom domain is
+ * added: fall back to the project's production domain (VERCEL_PROJECT_PRODUCTION_URL,
+ * e.g. "jeevan-cars.vercel.app"), which Vercel provides at build and runtime.
+ */
+export function withDefaults(
+  source: Record<string, string | undefined>,
+): Record<string, string | undefined> {
+  const vercelDomain = source.VERCEL_PROJECT_PRODUCTION_URL;
+  if (source.NEXT_PUBLIC_SITE_URL || !vercelDomain) return source;
+  return { ...source, NEXT_PUBLIC_SITE_URL: `https://${vercelDomain}` };
+}
+
 function parse<T extends z.ZodType>(schema: T, label: string): z.infer<T> {
-  const result = schema.safeParse(process.env);
+  const result = schema.safeParse(withDefaults(process.env));
   if (!result.success) {
     const issues = result.error.issues
       .map((issue) => `  - ${issue.path.join(".")}: ${issue.message}`)
