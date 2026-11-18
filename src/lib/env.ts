@@ -1,7 +1,17 @@
 import "server-only";
 import { z } from "zod";
 
-const serverEnvSchema = z
+const LOCAL_HOSTS = new Set(["localhost", "127.0.0.1", "0.0.0.0", "[::1]"]);
+
+function isLocalUrl(url: string): boolean {
+  try {
+    return LOCAL_HOSTS.has(new URL(url).hostname);
+  } catch {
+    return false;
+  }
+}
+
+export const serverEnvSchema = z
   .object({
     NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
     DATABASE_URL: z.url({ protocol: /^postgres(ql)?$/ }),
@@ -9,11 +19,33 @@ const serverEnvSchema = z
     AUTH_SECRET: z.string().min(32, "AUTH_SECRET must be at least 32 characters"),
     /** Reverse proxies in front of the app that append to X-Forwarded-For. */
     TRUSTED_PROXY_HOPS: z.coerce.number().int().min(1).max(5).default(1),
+    /** Set to "1" by Vercel on its build machines and functions. */
+    VERCEL: z.string().optional(),
   })
   .superRefine((env, ctx) => {
+    // Values copied from a local .env are the most common Vercel misconfiguration:
+    // fail with a clear message instead of a wall of "can't reach 127.0.0.1" errors.
+    if (env.VERCEL) {
+      if (isLocalUrl(env.DATABASE_URL)) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["DATABASE_URL"],
+          message:
+            "points to localhost, which doesn't exist on Vercel. Use the Neon pooled URL (the one with -pooler) from .env.neon.",
+        });
+      }
+      if (isLocalUrl(env.NEXT_PUBLIC_SITE_URL)) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["NEXT_PUBLIC_SITE_URL"],
+          message:
+            "is a localhost address. Delete it on Vercel (the project's .vercel.app domain is used automatically) or set your https:// domain.",
+        });
+      }
+    }
     if (env.NODE_ENV !== "production") return;
-    const local = /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(env.NEXT_PUBLIC_SITE_URL);
-    if (!env.NEXT_PUBLIC_SITE_URL.startsWith("https://") && !local) {
+    // Local production builds (next build && next start) may use http://localhost.
+    if (!env.NEXT_PUBLIC_SITE_URL.startsWith("https://") && !isLocalUrl(env.NEXT_PUBLIC_SITE_URL)) {
       ctx.addIssue({
         code: "custom",
         path: ["NEXT_PUBLIC_SITE_URL"],
