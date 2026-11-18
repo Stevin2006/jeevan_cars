@@ -88,7 +88,7 @@ export function MobileMenu({
                               {link.label}
                             </span>
                             {active && (
-                              <span aria-hidden className="size-2 rounded-full bg-amber" />
+                              <span aria-hidden className="size-2 rounded-full bg-brand" />
                             )}
                           </Link>
                         </motion.li>

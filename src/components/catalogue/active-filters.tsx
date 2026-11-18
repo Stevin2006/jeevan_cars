@@ -57,7 +57,7 @@ export function ActiveFilters({
       <Link
         href={buildCatalogueHref({ sort: params.sort })}
         scroll={false}
-        className="px-2 text-sm font-medium text-amber-ink underline-offset-4 hover:underline"
+        className="px-2 text-sm font-medium text-brand-ink underline-offset-4 hover:underline"
       >
         Clear all
       </Link>

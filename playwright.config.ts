@@ -49,7 +49,7 @@ export default defineConfig({
     {
       name: "mobile",
       use: { ...devices["Pixel 7"], channel: "chrome" },
-      testMatch: /public\.spec\.ts/,
+      testMatch: /(public|preloader)\.spec\.ts/,
     },
   ],
   webServer: {

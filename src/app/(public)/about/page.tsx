@@ -105,7 +105,7 @@ export default async function AboutPage() {
             {PROCESS.map((step, index) => (
               <li key={step.title} className="bg-surface">
                 <Reveal delay={index * 0.08} className="flex h-full flex-col gap-4 p-6 sm:p-7">
-                  <span className="tabular font-mono text-sm text-amber-ink">
+                  <span className="tabular font-mono text-sm text-brand-ink">
                     {String(index + 1).padStart(2, "0")}
                   </span>
                   <h3 className="font-display text-xl font-bold">{step.title}</h3>

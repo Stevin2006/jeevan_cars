@@ -30,7 +30,7 @@ export async function CategoryGrid() {
                       {category.name}
                     </h3>
                     <ArrowUpRight
-                      className="size-5 shrink-0 text-steel transition-[color,translate] duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-amber"
+                      className="size-5 shrink-0 text-steel transition-[color,translate] duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-brand-bright"
                       aria-hidden
                     />
                   </div>
@@ -40,7 +40,7 @@ export async function CategoryGrid() {
                         {category.description}
                       </p>
                     )}
-                    <p className="tabular ml-auto text-right font-mono text-sm text-ink transition-colors group-hover:text-amber">
+                    <p className="tabular ml-auto text-right font-mono text-sm text-ink transition-colors group-hover:text-brand-bright">
                       {String(category.vehicleCount).padStart(2, "0")}
                       <span className="ml-1.5 label-caps text-muted-foreground group-hover:text-paper/50">
                         {category.vehicleCount === 1 ? "vehicle" : "vehicles"}

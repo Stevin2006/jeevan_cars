@@ -55,7 +55,7 @@ export function Navbar({ contact, pathname }: { contact: NavbarContact; pathname
               ),
         )}
       >
-        <Logo tone={overHero ? "light" : "dark"} className="shrink-0" />
+        <Logo tone={overHero ? "light" : "dark"} className="shrink-0" eager />
 
         <nav aria-label="Main" className="mx-auto hidden md:block">
           <ul className="flex items-center gap-1" onMouseLeave={() => setHovered(null)}>
@@ -87,7 +87,7 @@ export function Navbar({ contact, pathname }: { contact: NavbarContact; pathname
                         aria-hidden
                         className={cn(
                           "absolute inset-x-3.5 -bottom-px h-0.5 rounded-full",
-                          active ? "bg-amber" : overHero ? "bg-paper/40" : "bg-ink/20",
+                          active ? "bg-brand" : overHero ? "bg-paper/40" : "bg-ink/20",
                         )}
                         transition={{ type: "spring", stiffness: 500, damping: 40 }}
                       />

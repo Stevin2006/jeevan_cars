@@ -196,7 +196,7 @@ async function VehicleDetail({ params }: { params: PageProps<"/vehicles/[slug]">
                   </>
                 ) : (
                   <>
-                    <p className="font-display text-2xl font-bold text-amber-ink">
+                    <p className="font-display text-2xl font-bold text-brand-ink">
                       Contact for Price
                     </p>
                     <p className="mt-1 text-sm text-muted-foreground">

@@ -43,7 +43,7 @@ export function WhyChoose() {
           {REASONS.map((reason, index) => (
             <li key={reason.title} className="bg-paper">
               <Reveal delay={index * 0.06} className="flex h-full flex-col gap-5 p-6 sm:p-8">
-                <span className="flex size-11 items-center justify-center rounded-md bg-ink text-amber">
+                <span className="flex size-11 items-center justify-center rounded-md bg-ink text-brand-bright">
                   <reason.icon className="size-5" strokeWidth={1.75} aria-hidden />
                 </span>
                 <h3 className="font-display text-lg leading-snug font-bold">{reason.title}</h3>

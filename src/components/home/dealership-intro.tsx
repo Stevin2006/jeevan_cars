@@ -12,8 +12,8 @@ export async function DealershipIntro() {
       className="grain overflow-hidden bg-ink py-24 text-paper sm:py-32"
     >
       <div className="container-page grid gap-12 lg:grid-cols-12">
-        <p className="flex items-center gap-3 label-caps text-amber lg:col-span-3">
-          <span aria-hidden className="h-px w-6 bg-amber" />
+        <p className="flex items-center gap-3 label-caps text-brand-bright lg:col-span-3">
+          <span aria-hidden className="h-px w-6 bg-brand-bright" />
           The dealership
         </p>
 
@@ -46,7 +46,7 @@ export async function DealershipIntro() {
               </p>
               <Link
                 href="/about"
-                className="group inline-flex items-center gap-2 text-sm font-medium text-amber"
+                className="group inline-flex items-center gap-2 text-sm font-medium text-brand-bright"
               >
                 More about us
                 <ArrowRight

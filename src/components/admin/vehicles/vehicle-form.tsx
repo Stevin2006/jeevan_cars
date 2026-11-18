@@ -701,7 +701,7 @@ export function VehicleForm({
             <Link href="/admin/vehicles">Back to vehicles</Link>
           </Button>
           {isDirty && !isPending && (
-            <p className="text-center text-xs text-amber-ink">You have unsaved changes</p>
+            <p className="text-center text-xs text-brand-ink">You have unsaved changes</p>
           )}
         </div>
       </aside>

@@ -177,7 +177,9 @@ jeevan_cars/
 ## 6. Design direction (preview; finalised in Phase 3)
 
 - **Type:** expanded grotesk for display headings (e.g. _Archivo_ at wide width — automotive, confident), _Geist Sans_ for body, tabular figures for prices/specs.
-- **Palette:** near-black ink `#0B0D10` for cinematic hero/footer bands, warm off-white `#F7F6F3` browsing surfaces, one restrained accent (proposed deep copper/amber) for CTAs and status. Small radii (4–6px), hairline borders, no gradients beyond photo overlays.
+- **Palette:** graphite ink `#0F1216` for cinematic hero/footer bands, cool paper `#F4F5F3` browsing surfaces, and the logo's racing red as the single accent: `--brand` `#D90A12` (fills, white text), `--brand-ink` `#B3080F` (red text on light), `--brand-bright` `#FF3B42` (red text on dark), all WCAG AA. Small radii (4–6px), hairline borders, no gradients beyond photo overlays.
+- **Logo:** the circular Jeevan Cars badge (`src/assets/brand/jeevan-cars-badge.png`) with a "JEEVAN CARS" wordmark for legibility at small sizes; favicon, Apple icon and the default share image are generated from it.
+- **Homepage preloader:** first visit per session only — the badge with a red ring sweep, then a wipe to reveal the hero. Hidden by default in HTML (crawlers, no-JS and reduced-motion visitors never see it); capped at 3 s.
 - **Motion:** hero staggered reveal + slow image scale (single run, not looped), `whileInView` section reveals (once), card hover lift + image zoom, gallery crossfade with `AnimatePresence`, navbar transparent→solid on scroll, mobile menu slide with focus trap. All gated on `useReducedMotion`. Admin: sidebar collapse, dialog/sheet transitions, toasts, count-up stats, skeletons.
 - **Navbar:** jerrycomputers.com layout studied in Phase 3 and adapted — logo left, centred links, Explore Vehicles CTA right.
 

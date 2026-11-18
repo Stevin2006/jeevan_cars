@@ -30,7 +30,7 @@ export async function SiteFooter() {
     <footer className="grain bg-ink text-paper">
       <div className="container-page grid gap-12 py-16 md:grid-cols-12 lg:py-20">
         <div className="space-y-5 md:col-span-4">
-          <Logo tone="light" />
+          <Logo tone="light" size="lg" />
           <p className="max-w-xs text-sm leading-relaxed text-paper/60">
             {settings.tagline ??
               "Quality pre-owned cars and commercial vehicles, inspected and honestly priced."}
@@ -70,7 +70,10 @@ export async function SiteFooter() {
                 </li>
               ))}
             <li>
-              <Link href="/vehicles" className="text-amber transition-colors hover:text-paper">
+              <Link
+                href="/vehicles"
+                className="text-brand-bright transition-colors hover:text-paper"
+              >
                 All vehicles
               </Link>
             </li>
@@ -95,7 +98,7 @@ export async function SiteFooter() {
           <ul className="space-y-3 text-sm text-paper/75">
             {address.length > 0 && (
               <li className="flex gap-3">
-                <MapPin className="mt-0.5 size-4 shrink-0 text-amber" aria-hidden />
+                <MapPin className="mt-0.5 size-4 shrink-0 text-brand-bright" aria-hidden />
                 <address className="not-italic">
                   {address.map((line) => (
                     <span key={line} className="block">
@@ -111,7 +114,7 @@ export async function SiteFooter() {
                   href={getTelHref(settings.phone)}
                   className="tabular flex gap-3 hover:text-paper"
                 >
-                  <Phone className="mt-0.5 size-4 shrink-0 text-amber" aria-hidden />
+                  <Phone className="mt-0.5 size-4 shrink-0 text-brand-bright" aria-hidden />
                   {settings.phone}
                 </a>
               </li>
@@ -124,7 +127,7 @@ export async function SiteFooter() {
                   rel="noopener noreferrer"
                   className="flex gap-3 hover:text-paper"
                 >
-                  <MessageCircle className="mt-0.5 size-4 shrink-0 text-amber" aria-hidden />
+                  <MessageCircle className="mt-0.5 size-4 shrink-0 text-brand-bright" aria-hidden />
                   WhatsApp us
                 </a>
               </li>
@@ -135,7 +138,7 @@ export async function SiteFooter() {
                   href={`mailto:${settings.email}`}
                   className="flex gap-3 break-all hover:text-paper"
                 >
-                  <Mail className="mt-0.5 size-4 shrink-0 text-amber" aria-hidden />
+                  <Mail className="mt-0.5 size-4 shrink-0 text-brand-bright" aria-hidden />
                   {settings.email}
                 </a>
               </li>

@@ -41,7 +41,7 @@ export function Odometer({
             className={cn(
               "border-r border-white/10 text-center last:border-r-0",
               size === "sm" ? "w-[0.95em]" : "w-[1.15em]",
-              index === DIGITS - 1 && "bg-amber text-ink",
+              index === DIGITS - 1 && "bg-brand text-white",
             )}
           >
             {digit}

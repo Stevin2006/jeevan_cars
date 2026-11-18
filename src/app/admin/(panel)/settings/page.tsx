@@ -20,7 +20,7 @@ export default async function SettingsPage() {
         description="Business details, contact numbers and the homepage hero."
       />
       {!isCloudinaryConfigured() && (
-        <p className="rounded-md border border-amber/50 bg-amber/10 px-4 py-3 text-sm">
+        <p className="rounded-md border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-950">
           Photo uploads are turned off until Cloudinary keys are added to the server environment
           (see <code className="font-mono text-xs">.env.example</code>).
         </p>

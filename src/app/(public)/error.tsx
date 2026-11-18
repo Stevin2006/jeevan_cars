@@ -17,7 +17,7 @@ export default function PublicError({
 
   return (
     <div className="container-page flex flex-1 flex-col items-start justify-center gap-6 pt-[calc(var(--nav-height)+4rem)] pb-24">
-      <p className="label-caps text-amber-ink">Something went wrong</p>
+      <p className="label-caps text-brand-ink">Something went wrong</p>
       <h1 className="font-display text-4xl font-extrabold">We hit a bump in the road.</h1>
       <p className="max-w-md text-lg text-muted-foreground">
         This page didn&rsquo;t load properly. Please try again — if it keeps happening, give us a

@@ -49,6 +49,8 @@ const nextConfig: NextConfig = {
   },
   partialPrefetching: true,
   poweredByHeader: false,
+  // Hide the "N" route indicator in development; errors still open the overlay.
+  devIndicators: false,
   turbopack: {
     rules: {
       "*.css": {
@@ -59,7 +61,7 @@ const nextConfig: NextConfig = {
   },
   images: {
     formats: ["image/avif", "image/webp"],
-    qualities: [60, 75],
+    qualities: [60, 75, 90],
     remotePatterns: [
       { protocol: "https", hostname: "res.cloudinary.com" },
       // Development sample inventory (prisma/seed-sample.ts) only.

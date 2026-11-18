@@ -27,7 +27,7 @@ export function SectionHeading({
           className={cn(
             "flex items-center gap-3 label-caps",
             align === "center" && "justify-center",
-            tone === "light" ? "text-amber" : "text-amber-ink",
+            tone === "light" ? "text-brand-bright" : "text-brand-ink",
           )}
         >
           <span aria-hidden className="h-px w-6 bg-current" />

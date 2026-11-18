@@ -26,7 +26,7 @@ export function AnimatedOdometer({ km, className }: { km: number; className?: st
             aria-hidden
             className={cn(
               "relative h-[1.5em] w-[1.05em] overflow-hidden border-r border-white/10 last:border-r-0",
-              index === digits.length - 1 && "rounded-r-sm bg-amber text-ink",
+              index === digits.length - 1 && "rounded-r-sm bg-brand text-white",
             )}
           >
             <motion.span

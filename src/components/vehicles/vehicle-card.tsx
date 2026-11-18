@@ -88,7 +88,7 @@ export function VehicleCard({
               "tabular text-right",
               vehicle.price !== null
                 ? "font-display text-lg font-bold"
-                : "text-sm font-medium text-amber-ink",
+                : "text-sm font-medium text-brand-ink",
             )}
           >
             {priceLabel}

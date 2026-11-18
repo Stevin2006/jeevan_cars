@@ -7,7 +7,7 @@
 /*
  * Jeevan Cars design tokens.
  * Graphite "showroom at dusk" bands for cinematic moments, cool paper surfaces
- * for browsing, one dashboard-amber accent for primary actions.
+ * for browsing, and the logo's racing red for primary actions.
  */
 :root {
   /* Brand palette */
@@ -18,9 +18,13 @@
   --surface: #ffffff;
   --line: #dee2e5;
   --steel: #5a636e;
-  --amber: #f0a43a;
-  --amber-strong: #e08f1f;
-  --amber-ink: #8a5300;
+  /* Brand red, from the Jeevan Cars badge (#f80a0e). Shades are tuned for
+     WCAG AA: white text on --brand, --brand-ink on light, --brand-bright on ink. */
+  --brand-logo: #f80a0e;
+  --brand: #d90a12;
+  --brand-strong: #b8070e;
+  --brand-ink: #b3080f;
+  --brand-bright: #ff3b42;
 
   /* Availability */
   --status-available: #1f7a4d;
@@ -45,11 +49,11 @@
   --destructive: #c23b32;
   --border: var(--line);
   --input: #cfd4d8;
-  --ring: var(--amber-strong);
+  --ring: var(--brand);
   --radius: 0.375rem;
 
   --chart-1: var(--ink);
-  --chart-2: var(--amber);
+  --chart-2: var(--brand);
   --chart-3: var(--steel);
   --chart-4: var(--status-available);
   --chart-5: var(--status-sold);
@@ -61,7 +65,7 @@
   --sidebar-accent: var(--muted);
   --sidebar-accent-foreground: var(--ink);
   --sidebar-border: var(--line);
-  --sidebar-ring: var(--amber-strong);
+  --sidebar-ring: var(--brand);
 
   --nav-height: 4.5rem;
 }
@@ -106,9 +110,11 @@
   --color-surface: var(--surface);
   --color-line: var(--line);
   --color-steel: var(--steel);
-  --color-amber: var(--amber);
-  --color-amber-strong: var(--amber-strong);
-  --color-amber-ink: var(--amber-ink);
+  --color-brand-logo: var(--brand-logo);
+  --color-brand: var(--brand);
+  --color-brand-strong: var(--brand-strong);
+  --color-brand-ink: var(--brand-ink);
+  --color-brand-bright: var(--brand-bright);
   --color-status-available: var(--status-available);
   --color-status-reserved: var(--status-reserved);
   --color-status-sold: var(--status-sold);
@@ -202,6 +208,82 @@
   }
 }
 
+/*
+ * Homepage preloader. Hidden unless an inline script sets
+ * html[data-preloading] on the first visit of a session (so crawlers, no-JS
+ * and reduced-motion visitors never see it). "active" holds the hero
+ * entrance; "leaving" wipes the panel away while the hero plays.
+ */
+.site-preloader {
+  display: none;
+  clip-path: inset(0 0 0 0);
+}
+html[data-preloading] .site-preloader {
+  display: flex;
+}
+html[data-preloading="active"] body {
+  overflow: hidden;
+}
+html[data-preloading="active"] .animate-hero-rise,
+html[data-preloading="active"] .animate-hero-line {
+  animation-play-state: paused;
+}
+html[data-preloading="leaving"] .site-preloader {
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 0.85s cubic-bezier(0.76, 0, 0.24, 1);
+}
+html[data-preloading="leaving"] .site-preloader .preloader-stage {
+  transform: translateY(-24px) scale(0.94);
+  opacity: 0;
+  transition:
+    transform 0.6s var(--ease-out-quart),
+    opacity 0.45s ease;
+}
+@keyframes preloader-badge {
+  from {
+    opacity: 0;
+    transform: scale(0.82) rotate(-14deg);
+  }
+}
+@keyframes preloader-ring {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes preloader-glow {
+  0% {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+}
+@keyframes preloader-fade {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+.preloader-badge {
+  animation: preloader-badge 0.75s var(--ease-out-quart) both;
+}
+.preloader-ring {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: preloader-ring 1.15s cubic-bezier(0.65, 0, 0.35, 1) 0.15s forwards;
+}
+.preloader-glow {
+  animation: preloader-glow 1.3s ease-out both;
+}
+.preloader-caption {
+  animation: preloader-fade 0.6s var(--ease-out-quart) 0.45s both;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -220,8 +302,8 @@
     cursor: pointer;
   }
   ::selection {
-    background: var(--amber);
-    color: var(--ink);
+    background: var(--brand);
+    color: #fff;
   }
   .tabular {
     font-variant-numeric: tabular-nums;

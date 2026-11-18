@@ -42,6 +42,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en-IN"
       className={`${archivo.variable} ${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      // The homepage preloader's boot script sets data-preloading before hydration.
+      suppressHydrationWarning
     >
       <body className="flex min-h-full flex-col">
         <MotionProvider>{children}</MotionProvider>

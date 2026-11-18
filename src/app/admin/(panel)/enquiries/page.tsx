@@ -151,7 +151,7 @@ export default async function AdminEnquiriesPage({ searchParams }: PageProps<"/a
               {enquiries.map((enquiry) => (
                 <TableRow
                   key={enquiry.id}
-                  className={cn(enquiry.status === "NEW" && "bg-amber/[0.06]")}
+                  className={cn(enquiry.status === "NEW" && "bg-brand/[0.04]")}
                 >
                   <TableCell>
                     <Link
@@ -168,7 +168,7 @@ export default async function AdminEnquiriesPage({ searchParams }: PageProps<"/a
                     </p>
                     <p className="truncate text-xs text-muted-foreground">{enquiry.message}</p>
                     {enquiry.followUpAt && (
-                      <p className="mt-0.5 text-xs text-amber-ink">
+                      <p className="mt-0.5 text-xs text-brand-ink">
                         Follow up {formatDate(enquiry.followUpAt)}
                       </p>
                     )}

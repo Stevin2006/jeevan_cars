@@ -18,9 +18,9 @@ const buttonVariants = cva(
         destructive:
           "bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40",
         link: "text-primary underline-offset-4 hover:underline",
-        // Jeevan Cars: amber primary action, and an outline for dark photo bands.
+        // Jeevan Cars: brand-red primary action, and an outline for dark photo bands.
         accent:
-          "bg-amber text-ink shadow-[inset_0_-2px_0_rgba(0,0,0,0.12)] hover:bg-amber-strong focus-visible:ring-amber/50",
+          "bg-brand text-white shadow-[inset_0_-2px_0_rgba(0,0,0,0.18)] hover:bg-brand-strong focus-visible:ring-brand/50",
         inverse:
           "border-white/25 bg-white/5 text-paper backdrop-blur-sm hover:border-white/50 hover:bg-white/10",
       },

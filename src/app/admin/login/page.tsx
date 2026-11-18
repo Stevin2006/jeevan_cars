@@ -37,9 +37,9 @@ export default function LoginPage({ searchParams }: PageProps<"/admin/login">) {
   return (
     <div className="grid min-h-svh flex-1 lg:grid-cols-2">
       <div className="grain relative hidden flex-col justify-between bg-ink p-12 text-paper lg:flex">
-        <Logo tone="light" />
+        <Logo tone="light" size="lg" />
         <div className="space-y-4">
-          <p className="label-caps text-amber">Dealer console</p>
+          <p className="label-caps text-brand-bright">Dealer console</p>
           <p className="max-w-md font-display text-4xl leading-[1.05] font-bold">
             Manage stock, pricing and enquiries in one place.
           </p>

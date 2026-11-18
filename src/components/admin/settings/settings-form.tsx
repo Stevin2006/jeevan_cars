@@ -173,7 +173,7 @@ export function SettingsForm({ defaults }: { defaults: SiteSettingsInput }) {
       </Group>
 
       <div className="sticky bottom-0 -mx-6 -mb-6 flex items-center justify-end gap-3 rounded-b-lg border-t bg-surface/95 px-6 py-4 backdrop-blur">
-        {isDirty && <p className="text-sm text-amber-ink">Unsaved changes</p>}
+        {isDirty && <p className="text-sm text-brand-ink">Unsaved changes</p>}
         <Button type="submit" size="lg" disabled={isPending || !isDirty}>
           {isPending && <Loader2 className="animate-spin" data-icon="inline-start" aria-hidden />}
           Save settings

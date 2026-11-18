@@ -34,11 +34,11 @@ export async function NewEnquiriesBadge({ variant }: { variant: "pill" | "dot" }
 
   return variant === "dot" ? (
     <span
-      className="absolute top-1.5 right-1.5 size-2 rounded-full bg-amber"
+      className="absolute top-1.5 right-1.5 size-2 rounded-full bg-brand"
       aria-label={`${count} new`}
     />
   ) : (
-    <span className="tabular ml-auto rounded-full bg-amber px-1.5 font-mono text-[0.6875rem] leading-5 text-ink">
+    <span className="tabular ml-auto rounded-full bg-brand px-1.5 font-mono text-[0.6875rem] leading-5 text-white">
       {count}
     </span>
   );

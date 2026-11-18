@@ -37,7 +37,7 @@ export function MapEmbed({
           className,
         )}
       >
-        <MapPin className="size-6 text-amber" aria-hidden />
+        <MapPin className="size-6 text-brand-bright" aria-hidden />
         <p className="font-display text-xl font-bold">{settings.businessName}</p>
         <p className="text-sm text-paper/60">Our address will appear here soon.</p>
       </div>
@@ -67,7 +67,7 @@ export function MapEmbed({
       {query && (
         <div className="flex flex-col gap-3 border-t px-4 py-3.5 sm:flex-row sm:items-center sm:justify-between">
           <p className="flex min-w-0 items-center gap-2 text-sm">
-            <MapPin className="size-4 shrink-0 text-amber-ink" aria-hidden />
+            <MapPin className="size-4 shrink-0 text-brand-ink" aria-hidden />
             <span className="truncate">
               <span className="font-medium">{settings.businessName}</span>
               {firstLine && <span className="text-muted-foreground"> · {firstLine}</span>}

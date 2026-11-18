@@ -74,7 +74,7 @@ function SortableTile({
       <div
         className={cn(
           "group relative aspect-[3/2] overflow-hidden rounded-md bg-muted ring-offset-2",
-          image.isPrimary && "ring-2 ring-amber",
+          image.isPrimary && "ring-2 ring-brand",
         )}
       >
         <SmartImage
@@ -95,7 +95,7 @@ function SortableTile({
           <GripVertical className="size-4" aria-hidden />
         </button>
         {image.isPrimary ? (
-          <span className="absolute top-1.5 right-1.5 rounded-sm bg-amber px-1.5 py-0.5 text-[0.6875rem] font-semibold text-ink">
+          <span className="absolute top-1.5 right-1.5 rounded-sm bg-brand px-1.5 py-0.5 text-[0.6875rem] font-semibold text-white">
             Cover
           </span>
         ) : (

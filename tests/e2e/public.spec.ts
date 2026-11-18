@@ -1,6 +1,12 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
+// Behave like a returning visitor so the homepage preloader (covered in
+// preloader.spec.ts) doesn't sit over the page under test.
+test.beforeEach(async ({ page }) => {
+  await page.addInitScript(() => sessionStorage.setItem("jc-preloader-seen", "1"));
+});
+
 const PAGES = ["/", "/vehicles", "/vehicles/honda-city-vx-cvt-2019", "/about", "/contact"];
 
 async function expectNoHorizontalScroll(page: Page) {

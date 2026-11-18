@@ -1,6 +1,12 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
+// Behave like a returning visitor so the homepage preloader (covered in
+// preloader.spec.ts) doesn't sit over the page under test.
+test.beforeEach(async ({ page }) => {
+  await page.addInitScript(() => sessionStorage.setItem("jc-preloader-seen", "1"));
+});
+
 // Credentials created by scripts/e2e-prepare.sh for the throwaway e2e database.
 const ADMIN = { email: "e2e-admin@jeevancars.test", password: "e2e-password-not-secret" };
 

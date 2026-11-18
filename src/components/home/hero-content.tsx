@@ -21,10 +21,10 @@ export function HeroContent({ city, stats }: { city: string | null; stats: Inven
   return (
     <div className="relative container-page flex flex-1 flex-col justify-end pt-[calc(var(--nav-height)+3rem)] pb-10 sm:pb-14">
       <p
-        className="mb-6 flex animate-hero-rise items-center gap-3 label-caps text-amber"
+        className="mb-6 flex animate-hero-rise items-center gap-3 label-caps text-brand-bright"
         style={enter(0.1)}
       >
-        <span aria-hidden className="h-px w-8 bg-amber" />
+        <span aria-hidden className="h-px w-8 bg-brand-bright" />
         Pre-owned cars &amp; commercial vehicles{city ? ` · ${city}` : ""}
       </p>
 
@@ -39,7 +39,7 @@ export function HeroContent({ city, stats }: { city: string | null; stats: Inven
         </span>
         <span className="block overflow-hidden pb-[0.06em]">
           <span className="block animate-hero-line text-paper/55" style={enter(0.27)}>
-            Ready for more<span className="text-amber">.</span>
+            Ready for more<span className="text-brand-bright">.</span>
           </span>
         </span>
       </h1>

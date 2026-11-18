@@ -18,7 +18,7 @@ export const ENQUIRY_STATUS_LABELS: Record<EnquiryStatus, string> = {
 };
 
 const ENQUIRY_STYLES: Record<EnquiryStatus, string> = {
-  NEW: "bg-amber/20 text-amber-ink",
+  NEW: "bg-brand/10 text-brand-ink",
   CONTACTED: "bg-sky-100 text-sky-800",
   FOLLOW_UP: "bg-violet-100 text-violet-800",
   CONVERTED: "bg-status-available/12 text-status-available",

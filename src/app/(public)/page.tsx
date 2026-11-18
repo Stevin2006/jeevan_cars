@@ -1,3 +1,4 @@
+import { SitePreloader } from "@/components/brand/site-preloader";
 import { CategoryGrid } from "@/components/home/category-grid";
 import { ContactSection } from "@/components/home/contact-section";
 import { DealershipIntro } from "@/components/home/dealership-intro";
@@ -11,6 +12,7 @@ import { DealerJsonLd } from "@/components/seo/dealer-json-ld";
 export default function HomePage() {
   return (
     <>
+      <SitePreloader />
       <DealerJsonLd />
       <Hero />
       <FeaturedVehicles />

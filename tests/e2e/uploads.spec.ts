@@ -2,6 +2,12 @@ import { expect, test } from "@playwright/test";
 import { v2 as cloudinary } from "cloudinary";
 import sharp from "sharp";
 
+// Behave like a returning visitor so the homepage preloader (covered in
+// preloader.spec.ts) doesn't sit over the page under test.
+test.beforeEach(async ({ page }) => {
+  await page.addInitScript(() => sessionStorage.setItem("jc-preloader-seen", "1"));
+});
+
 const ADMIN = { email: "e2e-admin@jeevancars.test", password: "e2e-password-not-secret" };
 const configured = Boolean(process.env.CLOUDINARY_API_SECRET);
 

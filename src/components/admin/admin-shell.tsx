@@ -162,7 +162,7 @@ export function AdminShell({ account, enquiryBadge, enquiryDot, children }: Shel
             collapsed ? "justify-center" : "justify-between px-1.5",
           )}
         >
-          {!collapsed && <Logo className="[&>span:first-child]:text-lg" />}
+          {!collapsed && <Logo size="sm" />}
           <button
             type="button"
             onClick={toggleCollapsed}
@@ -184,7 +184,7 @@ export function AdminShell({ account, enquiryBadge, enquiryDot, children }: Shel
 
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b bg-surface/90 px-4 backdrop-blur lg:hidden">
-          <Logo className="[&>span:first-child]:text-lg" />
+          <Logo size="sm" />
           <Dialog.Root open={mobileOpen} onOpenChange={setMobileOpen}>
             <Dialog.Trigger asChild>
               <button
@@ -216,7 +216,7 @@ export function AdminShell({ account, enquiryBadge, enquiryDot, children }: Shel
                     >
                       <Dialog.Title className="sr-only">Admin menu</Dialog.Title>
                       <div className="flex h-12 items-center justify-between px-1.5">
-                        <Logo className="[&>span:first-child]:text-lg" />
+                        <Logo size="sm" />
                         <Dialog.Close
                           aria-label="Close admin menu"
                           className="flex size-8 items-center justify-center rounded-md hover:bg-muted"

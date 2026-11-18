@@ -8,7 +8,7 @@ export async function EnquiryCta() {
   const { whatsappNumber } = await getSiteSettings();
 
   return (
-    <section aria-labelledby="cta-heading" className="bg-amber text-ink">
+    <section aria-labelledby="cta-heading" className="grain bg-brand text-white">
       <div className="container-page flex flex-col gap-8 py-16 sm:py-20 lg:flex-row lg:items-center lg:justify-between">
         <div className="max-w-2xl space-y-4">
           <h2
@@ -17,7 +17,7 @@ export async function EnquiryCta() {
           >
             Can&rsquo;t see the vehicle you&rsquo;re after?
           </h2>
-          <p className="text-lg text-ink/75">
+          <p className="text-lg text-white/85">
             Tell us the make, budget and year you have in mind. New stock arrives every week, and
             we&rsquo;ll let you know the moment a match comes in.
           </p>
@@ -34,7 +34,7 @@ export async function EnquiryCta() {
               asChild
               size="xl"
               variant="outline"
-              className="border-ink/25 bg-transparent hover:bg-ink/5"
+              className="border-white/45 bg-transparent text-white hover:bg-white/10 hover:text-white"
             >
               <a
                 href={getWhatsAppHref(

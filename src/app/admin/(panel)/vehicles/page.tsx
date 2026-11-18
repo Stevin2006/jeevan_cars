@@ -188,7 +188,7 @@ export default async function AdminVehiclesPage({ searchParams }: PageProps<"/ad
                           </span>
                           {vehicle.isFeatured && (
                             <Star
-                              className="size-3.5 shrink-0 fill-amber text-amber"
+                              className="size-3.5 shrink-0 fill-brand text-brand"
                               aria-label="Featured"
                             />
                           )}
@@ -207,7 +207,7 @@ export default async function AdminVehiclesPage({ searchParams }: PageProps<"/ad
                       <span className="text-muted-foreground">—</span>
                     )}
                     {!vehicle.showPrice && (
-                      <span className="block text-xs text-amber-ink">Contact for Price</span>
+                      <span className="block text-xs text-brand-ink">Contact for Price</span>
                     )}
                   </TableCell>
                   <TableCell>
