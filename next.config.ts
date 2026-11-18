@@ -41,6 +41,12 @@ const nextConfig: NextConfig = {
   // E2E builds use their own folder so they can run alongside `next dev`.
   distDir: process.env.NEXT_DIST_DIR || ".next",
   cacheComponents: true,
+  experimental: {
+    // Turbopack's on-disk dev cache (.next/dev/cache) corrupted repeatedly on
+    // this project's NTFS drive, crashing `next dev` with "task no longer
+    // exists" panics. Dev compiles from scratch on each start instead.
+    turbopackFileSystemCacheForDev: false,
+  },
   partialPrefetching: true,
   poweredByHeader: false,
   turbopack: {
